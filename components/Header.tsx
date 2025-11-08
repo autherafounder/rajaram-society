@@ -48,14 +48,14 @@ export default function Header() {
           <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-primary/20 shadow-md">
             <Image
               src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-              alt="Rajaram Society Logo"
+              alt="Jaijawan Chs Logo"
               fill
               sizes="48px"
               className="object-cover"
               priority
             />
           </div>
-          <span className="text-xl font-bold text-gray-800 hidden sm:block">Rajaram Society</span>
+          <span className="text-xl font-bold text-gray-800 hidden sm:block">Jaijawan Chs</span>
         </Link>
 
         {/* Navigation Menu */}

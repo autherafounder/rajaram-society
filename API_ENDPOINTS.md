@@ -1,6 +1,6 @@
 # API Endpoints Documentation
 
-This document lists all the API endpoints available in the Rajaram Society website.
+This document lists all the API endpoints available in the Jaijawan Chs website.
 
 ## Authentication Endpoints
 

@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
           <div className="relative w-20 h-20 rounded-full overflow-hidden ring-2 ring-primary/20 shadow-md">
             <Image
               src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-              alt="Rajaram Society Logo"
+              alt="Jaijawan Chs Logo"
               fill
               sizes="80px"
               className="object-cover"
@@ -97,7 +97,7 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                placeholder="admin@rajaramsociety.com"
+                placeholder="admin@jaijawanchs.com"
               />
             </div>
           </div>

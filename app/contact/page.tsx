@@ -115,7 +115,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1">Location</h3>
                     <p className="text-gray-600">
-                      Rajaram Society Office<br />
+                      Jaijawan Chs Office<br />
                       Mumbai, Maharashtra, India
                     </p>
                   </div>
@@ -127,10 +127,10 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1">Society / Admin Contact</h3>
                     <a
-                      href="mailto:admin@rajaramsociety.com"
+                      href="mailto:admin@jaijawanchs.com"
                       className="text-primary hover:underline"
                     >
-                      admin@rajaramsociety.com
+                      admin@jaijawanchs.com
                     </a>
                   </div>
                 </div>
@@ -141,10 +141,10 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1">Email Address</h3>
                     <a
-                      href="mailto:info@rajaramsociety.com"
+                      href="mailto:info@jaijawanchs.com"
                       className="text-gray-600 hover:text-primary"
                     >
-                      info@rajaramsociety.com
+                      info@jaijawanchs.com
                     </a>
                   </div>
                 </div>

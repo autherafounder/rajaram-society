@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Introduction</h2>
               <p className="text-gray-700 leading-relaxed">
-                Rajaram Society (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting 
+                Jaijawan Chs (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting 
                 your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard 
                 your information when you visit our website and use our services.
               </p>
@@ -212,10 +212,10 @@ export default function PrivacyPolicyPage() {
                   <div>
                     <p className="text-sm font-semibold text-gray-800 mb-1">Email:</p>
                     <a 
-                      href="mailto:privacy@rajaramsociety.com" 
+                      href="mailto:privacy@jaijawanchs.com" 
                       className="text-gray-700 hover:text-primary transition-colors"
                     >
-                      privacy@rajaramsociety.com
+                      privacy@jaijawanchs.com
                     </a>
                   </div>
                 </div>
@@ -236,7 +236,7 @@ export default function PrivacyPolicyPage() {
                   <div>
                     <p className="text-sm font-semibold text-gray-800 mb-1">Address:</p>
                     <p className="text-gray-700">
-                      Rajaram Society Office, Mumbai, Maharashtra, India
+                      Jaijawan Chs Office, Mumbai, Maharashtra, India
                     </p>
                   </div>
                 </div>

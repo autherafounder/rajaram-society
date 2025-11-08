@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-white text-xl font-bold mb-4">Rajaram Society</h3>
+            <h3 className="text-white text-xl font-bold mb-4">Jaijawan Chs</h3>
             <p className="mb-4">
               Building communities and shaping the future through quality construction
               and sustainable development.
@@ -56,10 +56,10 @@ export default function Footer() {
                 <div>
                   <span className="text-gray-400 text-sm block mb-0.5">Email:</span>
                   <a
-                    href="mailto:info@rajaramsociety.com"
+                    href="mailto:info@jaijawanchs.com"
                     className="text-gray-300 hover:text-primary transition-colors"
                   >
-                    info@rajaramsociety.com
+                    info@jaijawanchs.com
                   </a>
                 </div>
               </li>
@@ -80,7 +80,7 @@ export default function Footer() {
                 <div>
                   <span className="text-gray-400 text-sm block mb-0.5">Address:</span>
                   <span className="text-gray-300">
-                    Rajaram Society, Mumbai
+                    Jaijawan Chs, Mumbai
                   </span>
                 </div>
               </li>
@@ -91,12 +91,12 @@ export default function Footer() {
         <div className="border-t border-gray-700 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
-              <p>&copy; {new Date().getFullYear()} Rajaram Society. All rights reserved.</p>
+              <p>&copy; {new Date().getFullYear()} Jaijawan Chs. All rights reserved.</p>
             </div>
             {/* Social Media Icons */}
             <div className="flex items-center gap-4">
               <a
-                href="https://www.instagram.com/rajaramsociety"
+                href="https://www.instagram.com/jaijawanchs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-gray-800 hover:bg-primary flex items-center justify-center transition-colors"
@@ -105,7 +105,7 @@ export default function Footer() {
                 <Instagram className="w-5 h-5 text-white" />
               </a>
               <a
-                href="https://www.twitter.com/rajaramsociety"
+                href="https://www.twitter.com/jaijawanchs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-gray-800 hover:bg-primary flex items-center justify-center transition-colors"
@@ -114,7 +114,7 @@ export default function Footer() {
                 <Twitter className="w-5 h-5 text-white" />
               </a>
               <a
-                href="https://www.facebook.com/rajaramsociety"
+                href="https://www.facebook.com/jaijawanchs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-gray-800 hover:bg-primary flex items-center justify-center transition-colors"
@@ -123,7 +123,7 @@ export default function Footer() {
                 <Facebook className="w-5 h-5 text-white" />
               </a>
               <a
-                href="https://www.linkedin.com/company/rajaramsociety"
+                href="https://www.linkedin.com/company/jaijawanchs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-gray-800 hover:bg-primary flex items-center justify-center transition-colors"

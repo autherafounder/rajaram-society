@@ -10,7 +10,7 @@ npm install
 ## Admin Login Credentials
 
 **Default Credentials:**
-- Email: `admin@rajaramsociety.com`
+- Email: `admin@jaijawanchs.com`
 - Password: `admin123`
 
 **⚠️ IMPORTANT:** Change the default password after first login!
