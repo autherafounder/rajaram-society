@@ -64,7 +64,6 @@ const nextConfig = {
               "frame-ancestors 'self'",
               "base-uri 'self'",
               "form-action 'self'",
-              "upgrade-insecure-requests",
               "object-src 'none'",
               "media-src 'self'"
             ].join('; ')
