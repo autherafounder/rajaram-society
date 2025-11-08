@@ -28,7 +28,7 @@ export default function AboutPage() {
                   About Us
                 </h2>
                 <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                  Society Name is a registered cooperative housing society established under the provisions of the Maharashtra Co-operative Societies Act, 1960. The society's registration number is <strong>registration no.</strong>, and its registered office is located at: <strong>society address</strong>.
+                  Society Name is a registered cooperative housing society established under the provisions of the Maharashtra Co-operative Societies Act, 1960. The society&apos;s registration number is <strong>registration no.</strong>, and its registered office is located at: <strong>society address</strong>.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed mb-4">
                   The society occupies a plot of land measuring approximately <strong>plot area</strong>, as per the approved old building sanction plan, and conveyance deed. Originally established in 1972, society name consists of a single standalone building of G+4 storeys, with 16 residential units and no commercial units. The property is conveniently located with an adjoining road of 15 meters.
