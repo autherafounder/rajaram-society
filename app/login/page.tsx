@@ -13,14 +13,16 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
-    
+    setError(''); // Clear previous errors
+
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -29,16 +31,17 @@ export default function LoginPage() {
       });
 
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Login failed');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Login failed');
       }
 
       const data = await response.json();
-      
-      // Redirect to home or dashboard after successful login
-      // window.location.href = '/dashboard';
-    } catch (error) {
-      // Handle error without exposing sensitive details
+
+      // Redirect to home page after successful login
+      window.location.href = '/';
+    } catch (err) {
+      // Display error to user
+      setError(err instanceof Error ? err.message : 'An error occurred during login');
       setPassword('');
     } finally {
       setIsSubmitting(false);
@@ -50,7 +53,7 @@ export default function LoginPage() {
       <Header />
       <main className="relative">
         <Hero blur={true} showButton={false} />
-        
+
         {/* Login Card Overlay */}
         <div className="absolute inset-0 flex items-center justify-center min-h-screen py-8">
           <div className="bg-white rounded-lg shadow-2xl p-6 md:p-8 w-full max-w-md mx-4 z-20 overflow-y-auto max-h-[90vh]">
@@ -126,6 +129,13 @@ export default function LoginPage() {
                   Remember Me
                 </label>
               </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-600">{error}</p>
+                </div>
+              )}
 
               {/* Login Button */}
               <button

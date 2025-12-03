@@ -13,7 +13,7 @@ export default function AboutPage() {
         <section className="bg-gradient-to-r from-primary/10 to-primary/5 py-16">
           <div className="container mx-auto px-4 max-w-4xl">
             <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-800">
-              Welcome to Society Name
+              Welcome to Jai Jawan Co-Operative Housing Society
             </h1>
           </div>
         </section>
@@ -28,10 +28,10 @@ export default function AboutPage() {
                   About Us
                 </h2>
                 <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                  Society Name is a registered cooperative housing society established under the provisions of the Maharashtra Co-operative Societies Act, 1960. The society&apos;s registration number is <strong>registration no.</strong>, and its registered office is located at: <strong>society address</strong>.
+                  Jai Jawan Co-Operative Housing Society is a registered cooperative housing society established under the provisions of the Maharashtra Co-operative Societies Act, 1960. The society&apos;s registration number is <strong>TNA/HSG/1077/81</strong>, and its registered office is located at: <strong>Plot No. 01, Sector 17, Vashi, Navi Mumbai – 400703</strong>.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                  The society occupies a plot of land measuring approximately <strong>plot area</strong>, as per the approved old building sanction plan, and conveyance deed. Originally established in 1972, society name consists of a single standalone building of G+4 storeys, with 16 residential units and no commercial units. The property is conveniently located with an adjoining road of 15 meters.
+                  The society occupies a plot of land measuring approximately <strong>1850 sq.m.</strong>, as per the approved old building sanction plan, and conveyance deed. Originally established in 1981, Jai Jawan Co-Operative Housing Society consists of a single standalone building of G+4 storeys, with 72 residential units and 45 commercial units. The property is conveniently located with an adjoining road of 19+30 meters.
                 </p>
               </div>
 
@@ -42,7 +42,7 @@ export default function AboutPage() {
                   Redevelopment Project
                 </h2>
                 <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                  Society Name is currently planning a major redevelopment project aimed at improving the facilities and infrastructure of the society. The redevelopment plans have been fully aligned with the guidelines set forth in Section 79(A) of the Maharashtra Co-operative Societies Act, 1960, ensuring full compliance with all statutory requirements.
+                  Jai Jawan Co-Operative Housing Society is currently planning a major redevelopment project aimed at improving the facilities and infrastructure of the society. The redevelopment plans have been fully aligned with the guidelines set forth in Section 79(A) of the Maharashtra Co-operative Societies Act, 1960, ensuring full compliance with all statutory requirements.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
                   The society has invested significant effort and resources to meet all regulatory obligations and has appointed <strong>M/s Patel Architects and Associates</strong> as the Project Management Consultant. The developer for this project is yet to be finalized.
@@ -53,36 +53,24 @@ export default function AboutPage() {
               <div className="mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 flex items-center gap-3">
                   <Users className="w-8 h-8 text-primary" />
-                  Management Committee (2022–2027)
+                  Management Committee
                 </h2>
                 <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                  The Management Committee for the term 2022–2027 is as follows:
+                  The Management Committee is as follows:
                 </p>
                 <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
                   <ul className="space-y-4 text-lg text-gray-700">
                     <li className="flex items-start gap-3">
                       <span className="font-semibold text-primary min-w-[100px]">Chairman:</span>
-                      <span>Chairman Name – Chairman</span>
+                      <span>Mr. Anandraj Periaswamy</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="font-semibold text-primary min-w-[100px]">Secretary:</span>
-                      <span>Secretary Name – Secretary</span>
+                      <span>Mr. Bhushan Ravindra Deshpande</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="font-semibold text-primary min-w-[100px]">Treasurer:</span>
-                      <span>Treasurer Name – Treasurer</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="font-semibold text-primary min-w-[100px]">Member:</span>
-                      <span>Members Name – Member</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="font-semibold text-primary min-w-[100px]">Member:</span>
-                      <span>Members Name – Member</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="font-semibold text-primary min-w-[100px]">Member:</span>
-                      <span>Members Name – Member</span>
+                      <span>Mr. Manohar Narayan Kadam</span>
                     </li>
                   </ul>
                 </div>
@@ -102,7 +90,7 @@ export default function AboutPage() {
                     <Award className="w-6 h-6 text-primary" />
                     Redevelopment Consultant
                   </h3>
-                  <p className="text-lg text-gray-700">Society Plus</p>
+                  <p className="text-lg text-gray-700">Patel Architects and Associates</p>
                 </div>
               </div>
 

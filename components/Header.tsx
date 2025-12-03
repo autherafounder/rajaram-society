@@ -2,14 +2,17 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect, useRef } from 'react';
-import { Home, Clock, Camera, MoreVertical, Contact, User, ChevronDown, Menu, X, FileText } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Home, Clock, Camera, Contact, User, Menu, X, FileText, LogOut } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Memoize Supabase client to prevent recreating on every render
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,27 +23,38 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Check if user is logged in with Supabase
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsMoreOpen(false);
-      }
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
     };
 
-    if (isMoreOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      subscription.unsubscribe();
     };
-  }, [isMoreOpen]);
+  }, [supabase]);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setIsLoggedIn(false);
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 bg-white transition-shadow duration-300 ${
-        isScrolled ? 'shadow-md' : 'shadow-sm'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 bg-white transition-shadow duration-300 ${isScrolled ? 'shadow-md' : 'shadow-sm'}`}
     >
       <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
@@ -48,14 +62,14 @@ export default function Header() {
           <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-primary/20 shadow-md">
             <Image
               src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-              alt="Jaijawan Chs Logo"
+              alt="Jai Jawan CHS Logo"
               fill
               sizes="48px"
               className="object-cover"
               priority
             />
           </div>
-          <span className="text-xl font-bold text-gray-800 hidden sm:block">Jaijawan Chs</span>
+          <span className="text-xl font-bold text-gray-800 hidden sm:block">Jai Jawan CHS</span>
         </Link>
 
         {/* Navigation Menu */}
@@ -88,43 +102,6 @@ export default function Header() {
             <span className="text-sm font-medium">Gallery</span>
           </Link>
 
-          {/* More Dropdown */}
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsMoreOpen(!isMoreOpen)}
-              aria-label="Toggle more menu"
-              aria-expanded={isMoreOpen}
-              className="flex flex-col items-center gap-1 text-gray-800 hover:text-primary transition-colors"
-            >
-              <MoreVertical className="w-5 h-5" aria-hidden="true" />
-              <span className="text-sm font-medium flex items-center gap-1">
-                More
-                <ChevronDown className={`w-3 h-3 transition-transform ${isMoreOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
-              </span>
-            </button>
-
-            {isMoreOpen && (
-              <div className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg py-2 min-w-[200px] z-50">
-                <Link
-                  href="/about"
-                  aria-label="Learn about us"
-                  className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100"
-                  onClick={() => setIsMoreOpen(false)}
-                >
-                  About Us
-                </Link>
-                <Link
-                  href="/services"
-                  aria-label="View our services"
-                  className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100"
-                  onClick={() => setIsMoreOpen(false)}
-                >
-                  Services
-                </Link>
-              </div>
-            )}
-          </div>
-
           <Link
             href="/contact"
             aria-label="Contact us"
@@ -134,14 +111,17 @@ export default function Header() {
             <span className="text-sm font-medium">Contact</span>
           </Link>
 
-          <Link
-            href="/documents"
-            aria-label="Access documents"
-            className="flex flex-col items-center gap-1 text-gray-800 hover:text-primary transition-colors"
-          >
-            <FileText className="w-5 h-5" aria-hidden="true" />
-            <span className="text-sm font-medium">Documents</span>
-          </Link>
+          {/* Only show Documents link when logged in */}
+          {isLoggedIn && (
+            <Link
+              href="/documents"
+              aria-label="Access documents"
+              className="flex flex-col items-center gap-1 text-gray-800 hover:text-primary transition-colors"
+            >
+              <FileText className="w-5 h-5" aria-hidden="true" />
+              <span className="text-sm font-medium">Documents</span>
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -154,15 +134,26 @@ export default function Header() {
           {isMobileMenuOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
         </button>
 
-        {/* Login Button */}
-        <Link
-          href="/login"
-          aria-label="Login to your account"
-          className="flex items-center gap-2 bg-white text-gray-800 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm"
-        >
-          <span className="hidden sm:inline font-medium">Login</span>
-          <User className="w-5 h-5" aria-hidden="true" />
-        </Link>
+        {/* Login/Logout Button */}
+        {isLoggedIn ? (
+          <button
+            onClick={handleLogout}
+            aria-label="Logout from your account"
+            className="flex items-center gap-2 bg-white text-gray-800 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm"
+          >
+            <span className="hidden sm:inline font-medium">Logout</span>
+            <LogOut className="w-5 h-5" aria-hidden="true" />
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            aria-label="Login to your account"
+            className="flex items-center gap-2 bg-white text-gray-800 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm"
+          >
+            <span className="hidden sm:inline font-medium">Login</span>
+            <User className="w-5 h-5" aria-hidden="true" />
+          </Link>
+        )}
       </nav>
 
       {/* Mobile Menu */}
@@ -205,19 +196,22 @@ export default function Header() {
               <Contact className="w-5 h-5" aria-hidden="true" />
               <span>Contact</span>
             </Link>
-            <Link
-              href="/documents"
-              aria-label="Access documents"
-              className="flex items-center gap-3 text-gray-800 hover:text-primary py-2"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <FileText className="w-5 h-5" aria-hidden="true" />
-              <span>Documents</span>
-            </Link>
+
+            {/* Only show Documents link when logged in */}
+            {isLoggedIn && (
+              <Link
+                href="/documents"
+                aria-label="Access documents"
+                className="flex items-center gap-3 text-gray-800 hover:text-primary py-2"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <FileText className="w-5 h-5" aria-hidden="true" />
+                <span>Documents</span>
+              </Link>
+            )}
           </div>
         </div>
       )}
     </header>
   );
 }
-

@@ -33,7 +33,7 @@ export default function SignUpPage() {
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const sanitized = sanitizeInput(value);
-    
+
     setFormData((prev) => ({
       ...prev,
       [name]: sanitized,
@@ -99,19 +99,23 @@ export default function SignUpPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     setIsSubmitting(true);
-    
+
     // API call
     try {
-      const response = await fetch('/api/auth/signup', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          fullName: formData.fullName,
+        }),
       });
 
       if (!response.ok) {
@@ -119,10 +123,13 @@ export default function SignUpPage() {
         throw new Error(error.error || 'Signup failed');
       }
 
-      // Redirect to login page after successful signup
+      const data = await response.json();
+
+      // Show success message and redirect
+      alert(data.message || 'Account created! Please check your email to confirm.');
       window.location.href = '/login?signup=success';
     } catch (error) {
-      setErrors({ submit: 'An error occurred. Please try again later.' });
+      setErrors({ submit: error instanceof Error ? error.message : 'An error occurred. Please try again later.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -160,7 +167,7 @@ export default function SignUpPage() {
       <Header />
       <main className="relative">
         <Hero blur={true} showButton={false} />
-        
+
         {/* Sign Up Card Overlay */}
         <div className="absolute inset-0 flex items-center justify-center min-h-screen py-8">
           <div className="bg-white rounded-lg shadow-2xl p-6 md:p-8 w-full max-w-md mx-4 z-20 overflow-y-auto max-h-[90vh]">
@@ -199,11 +206,10 @@ export default function SignUpPage() {
                     placeholder="Enter your full name"
                     value={formData.fullName}
                     onChange={handleChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                      errors.fullName
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.fullName
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-primary focus:border-transparent'
-                    }`}
+                      }`}
                     required
                   />
                 </div>
@@ -226,11 +232,10 @@ export default function SignUpPage() {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                      errors.email
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.email
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-primary focus:border-transparent'
-                    }`}
+                      }`}
                     required
                   />
                 </div>
@@ -253,11 +258,10 @@ export default function SignUpPage() {
                     placeholder="Enter your phone number"
                     value={formData.phone}
                     onChange={handleChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                      errors.phone
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.phone
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-primary focus:border-transparent'
-                    }`}
+                      }`}
                   />
                 </div>
                 {errors.phone && (
@@ -298,11 +302,10 @@ export default function SignUpPage() {
                     placeholder="Create a password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                      errors.password
+                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.password
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-primary focus:border-transparent'
-                    }`}
+                      }`}
                     required
                   />
                   <button
@@ -329,19 +332,18 @@ export default function SignUpPage() {
                               passwordStrength === 'weak'
                                 ? '33%'
                                 : passwordStrength === 'medium'
-                                ? '66%'
-                                : '100%',
+                                  ? '66%'
+                                  : '100%',
                           }}
                         />
                       </div>
                       <span
-                        className={`text-xs font-medium ${
-                          passwordStrength === 'weak'
+                        className={`text-xs font-medium ${passwordStrength === 'weak'
                             ? 'text-red-600'
                             : passwordStrength === 'medium'
-                            ? 'text-yellow-600'
-                            : 'text-green-600'
-                        }`}
+                              ? 'text-yellow-600'
+                              : 'text-green-600'
+                          }`}
                       >
                         {getPasswordStrengthText(passwordStrength)}
                       </span>
@@ -370,11 +372,10 @@ export default function SignUpPage() {
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
-                      errors.confirmPassword
+                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.confirmPassword
                         ? 'border-red-500 focus:ring-red-500'
                         : 'border-gray-300 focus:ring-primary focus:border-transparent'
-                    }`}
+                      }`}
                     required
                   />
                   <button

@@ -21,9 +21,9 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isSubmitting) return;
-    
+
     // Validate form
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) {
@@ -38,14 +38,14 @@ export default function ContactPage() {
     if (!formData.message.trim()) {
       newErrors.message = 'Message is required';
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -67,7 +67,7 @@ export default function ContactPage() {
         message: '',
       });
       setErrors({});
-      
+
       // Show success message
       alert('Thank you! Your message has been submitted successfully.');
     } catch (error) {
@@ -82,12 +82,12 @@ export default function ContactPage() {
   ) => {
     const { name, value } = e.target;
     const sanitized = name === 'message' || name === 'name' ? sanitizeInput(value) : value;
-    
+
     setFormData({
       ...formData,
       [name]: sanitized,
     });
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => {
@@ -107,7 +107,7 @@ export default function ContactPage() {
             {/* Left: Contact Information */}
             <div className="space-y-6">
               <h2 className="text-3xl font-bold text-gray-800 mb-6">Contact Information</h2>
-              
+
               <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
                 {/* Location */}
                 <div className="flex items-start gap-4">
@@ -115,8 +115,9 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1">Location</h3>
                     <p className="text-gray-600">
-                      Jaijawan Chs Office<br />
-                      Mumbai, Maharashtra, India
+                      Jai Jawan Co-Operative Housing Society<br />
+                      Plot No. 01, Sector 17, Vashi,<br />
+                      Navi Mumbai – 400703
                     </p>
                   </div>
                 </div>
@@ -127,10 +128,10 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1">Society / Admin Contact</h3>
                     <a
-                      href="mailto:admin@jaijawanchs.com"
+                      href="mailto:redevjaijawanchs@gmail.com"
                       className="text-primary hover:underline"
                     >
-                      admin@jaijawanchs.com
+                      redevjaijawanchs@gmail.com
                     </a>
                   </div>
                 </div>
@@ -141,10 +142,10 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1">Email Address</h3>
                     <a
-                      href="mailto:info@jaijawanchs.com"
+                      href="mailto:redevjaijawanchs@gmail.com"
                       className="text-gray-600 hover:text-primary"
                     >
-                      info@jaijawanchs.com
+                      redevjaijawanchs@gmail.com
                     </a>
                   </div>
                 </div>
@@ -155,9 +156,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1">Contact Number</h3>
                     <p className="text-gray-600">
-                      Landline: +91-XX-XXXX-XXXX<br />
-                      Mobile: +91-XXXXXXXXXX<br />
-                      Fax: +91-XX-XXXX-XXXX
+                      Mobile: +91 97696 49449
                     </p>
                   </div>
                 </div>
@@ -168,8 +167,7 @@ export default function ContactPage() {
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1">Office Timing</h3>
                     <p className="text-gray-600">
-                      Monday - Friday: 9:00 AM - 6:00 PM<br />
-                      Saturday: 9:00 AM - 2:00 PM<br />
+                      Monday - Saturday: 10:00 AM - 6:00 PM<br />
                       Sunday: Closed
                     </p>
                   </div>
@@ -181,7 +179,7 @@ export default function ContactPage() {
                 <h3 className="font-semibold text-gray-800 mb-4">Get Directions</h3>
                 <div className="w-full h-64 rounded-lg overflow-hidden">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.3346462746417!2d72.8776559!3d19.0759837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c9c676018b43%3A0x75f29c420b8af219!2sMumbai%2C%20Maharashtra%2C%20India!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+                    src="https://maps.app.goo.gl/e529kCTq2tn9nkVy7"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
@@ -196,7 +194,7 @@ export default function ContactPage() {
             {/* Right: Inquiry Form */}
             <div className="bg-white rounded-lg shadow-md p-8">
               <h2 className="text-3xl font-bold text-gray-800 mb-6">Get in Touch</h2>
-              
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Name */}
                 <div>
