@@ -1,6 +1,12 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export const createClient = () => {
+    // Check if environment variables are available
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        console.warn('Supabase environment variables not set');
+        // Return a minimal client that won't crash during build
+        return null as any;
+    }
     return createClientComponentClient();
 };
 

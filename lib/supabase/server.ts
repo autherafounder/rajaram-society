@@ -3,6 +3,13 @@ import { cookies } from 'next/headers';
 import type { Database } from './client';
 
 export const createServerClient = () => {
+    // Check if environment variables are available
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+        console.warn('Supabase environment variables not set');
+        // Return a minimal client that won't crash during build
+        return null as any;
+    }
+
     const cookieStore = cookies();
     return createServerComponentClient<Database>({ cookies: () => cookieStore });
 };
@@ -10,6 +17,8 @@ export const createServerClient = () => {
 // Helper function to get the current user
 export async function getCurrentUser() {
     const supabase = createServerClient();
+    if (!supabase) return null;
+
     const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {
@@ -22,6 +31,8 @@ export async function getCurrentUser() {
 // Helper function to get user profile including role
 export async function getUserProfile(userId: string) {
     const supabase = createServerClient();
+    if (!supabase) return null;
+
     const { data, error } = await supabase
         .from('profiles')
         .select('*')
