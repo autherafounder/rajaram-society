@@ -1,6 +1,11 @@
 'use client';
 
+import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useState, useEffect, useMemo } from 'react';
+import { Home, Clock, Camera, Contact, User, Menu, X, FileText, LogOut } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
