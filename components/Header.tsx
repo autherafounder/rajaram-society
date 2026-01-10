@@ -1,15 +1,12 @@
 'use client';
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { useState, useEffect, useMemo } from 'react';
-import { Home, Clock, Camera, Contact, User, Menu, X, FileText, LogOut } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const pathname = usePathname();
 
   // Memoize Supabase client to prevent recreating on every render
   const supabase = useMemo(() => createClient(), []);
@@ -27,6 +24,8 @@ export default function Header() {
     await supabase.auth.signOut();
     setIsLoggedIn(false);
   };
+
+  const isActive = (path: string) => pathname === path;
 
   return (
     <header
@@ -53,38 +52,41 @@ export default function Header() {
           <Link
             href="/"
             aria-label="Go to home page"
-            className="flex flex-col items-center gap-1 text-gray-800 hover:text-primary transition-colors"
+            className={`flex flex-col items-center gap-1 transition-colors ${isActive('/') ? 'text-primary' : 'text-gray-800 hover:text-primary'}`}
           >
             <Home className="w-5 h-5" aria-hidden="true" />
             <span className="text-sm font-medium">Home</span>
-            <span className="w-full h-0.5 bg-primary"></span>
+            {isActive('/') && <span className="w-full h-0.5 bg-primary"></span>}
           </Link>
 
           <Link
             href="/updates"
             aria-label="View project updates"
-            className="flex flex-col items-center gap-1 text-gray-800 hover:text-primary transition-colors"
+            className={`flex flex-col items-center gap-1 transition-colors ${isActive('/updates') ? 'text-primary' : 'text-gray-800 hover:text-primary'}`}
           >
             <Clock className="w-5 h-5" aria-hidden="true" />
             <span className="text-sm font-medium">Updates</span>
+            {isActive('/updates') && <span className="w-full h-0.5 bg-primary"></span>}
           </Link>
 
           <Link
             href="/gallery"
             aria-label="View project gallery"
-            className="flex flex-col items-center gap-1 text-gray-800 hover:text-primary transition-colors"
+            className={`flex flex-col items-center gap-1 transition-colors ${isActive('/gallery') ? 'text-primary' : 'text-gray-800 hover:text-primary'}`}
           >
             <Camera className="w-5 h-5" aria-hidden="true" />
             <span className="text-sm font-medium">Gallery</span>
+            {isActive('/gallery') && <span className="w-full h-0.5 bg-primary"></span>}
           </Link>
 
           <Link
             href="/contact"
             aria-label="Contact us"
-            className="flex flex-col items-center gap-1 text-gray-800 hover:text-primary transition-colors"
+            className={`flex flex-col items-center gap-1 transition-colors ${isActive('/contact') ? 'text-primary' : 'text-gray-800 hover:text-primary'}`}
           >
             <Contact className="w-5 h-5" aria-hidden="true" />
             <span className="text-sm font-medium">Contact</span>
+            {isActive('/contact') && <span className="w-full h-0.5 bg-primary"></span>}
           </Link>
 
           {/* Only show Documents link when logged in */}
@@ -92,10 +94,11 @@ export default function Header() {
             <Link
               href="/documents"
               aria-label="Access documents"
-              className="flex flex-col items-center gap-1 text-gray-800 hover:text-primary transition-colors"
+              className={`flex flex-col items-center gap-1 transition-colors ${isActive('/documents') ? 'text-primary' : 'text-gray-800 hover:text-primary'}`}
             >
               <FileText className="w-5 h-5" aria-hidden="true" />
               <span className="text-sm font-medium">Documents</span>
+              {isActive('/documents') && <span className="w-full h-0.5 bg-primary"></span>}
             </Link>
           )}
         </div>
