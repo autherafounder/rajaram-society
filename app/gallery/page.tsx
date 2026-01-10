@@ -20,25 +20,11 @@ const galleryCategories = {
   },
   new: {
     title: 'New Building Photos',
-    images: [
-      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1497215842964-222b430dc094?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1600585154526-990dced4db0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    ],
+    images: [],
   },
   current: {
     title: 'Current Status Photos',
-    images: [
-      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1487958449943-2429e8be8625?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1517638851339-311875d3dcd4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1534349735944-2b3a6f7a268f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-    ],
+    images: [],
   },
 };
 
@@ -69,8 +55,8 @@ export default function GalleryPage() {
                   key={key}
                   onClick={() => setSelectedCategory(key)}
                   className={`px-6 py-3 rounded-lg font-semibold transition-colors ${selectedCategory === key
-                      ? 'bg-primary text-white'
-                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                    ? 'bg-primary text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
                     }`}
                 >
                   {galleryCategories[key].title}
@@ -79,24 +65,36 @@ export default function GalleryPage() {
             </div>
 
             {/* Gallery Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {galleryCategories[selectedCategory].images.map((image, index) => (
-                <div
-                  key={index}
-                  onClick={() => openLightbox(image)}
-                  className="relative h-64 rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300 group"
-                >
-                  <Image
-                    src={image}
-                    alt={`${galleryCategories[selectedCategory].title} ${index + 1}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-110 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+            {galleryCategories[selectedCategory].images.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {galleryCategories[selectedCategory].images.map((image, index) => (
+                  <div
+                    key={index}
+                    onClick={() => openLightbox(image)}
+                    className="relative h-64 rounded-lg overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow duration-300 group"
+                  >
+                    <Image
+                      src={image}
+                      alt={`${galleryCategories[selectedCategory].title} ${index + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl shadow-inner p-12 text-center border-2 border-dashed border-gray-200">
+                <div className="max-w-md mx-auto">
+                  <h3 className="text-2xl font-bold text-gray-800 mb-2">Coming Soon</h3>
+                  <p className="text-gray-600">
+                    We are currently documenting the {galleryCategories[selectedCategory].title.toLowerCase()}.
+                    Please check back later for updates.
+                  </p>
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         </section>
       </main>
