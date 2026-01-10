@@ -19,11 +19,46 @@ interface TimelineItem {
 }
 
 const timelineItems: TimelineItem[] = [
-  { id: 1, step: 1, title: 'Resolution of redevelopment', description: 'Society resolution passed for redevelopment.', completed: false },
-  { id: 2, step: 2, title: 'PMC Invitation', description: 'Invitation issued to Project Management Consultants (PMC).', completed: false },
-  { id: 3, step: 3, title: 'PMC Tender Opening', description: 'PMC tenders opened and recorded.', completed: false },
-  { id: 4, step: 4, title: 'PMC Appointment', description: 'PMC appointed to manage the project.', completed: false },
-  { id: 5, step: 5, title: 'Area Certification', description: 'Certified area details obtained for planning.', completed: false },
+  {
+    id: 1,
+    step: 1,
+    title: 'Resolution of redevelopment',
+    description: 'Society resolution passed for redevelopment.',
+    completed: true,
+    downloadLinks: [{ name: 'Minutes of Meeting', url: '/docs/1. Minutes of Meeting for Resolution of Redevelopment.pdf' }]
+  },
+  {
+    id: 2,
+    step: 2,
+    title: 'PMC Invitation',
+    description: 'Invitation issued to Project Management Consultants (PMC).',
+    completed: true,
+    downloadLinks: [{ name: 'PMC Invitation', url: '/docs/2. PMC Invitation.pdf' }]
+  },
+  {
+    id: 3,
+    step: 3,
+    title: 'PMC Tender Opening',
+    description: 'PMC tenders opened and recorded.',
+    completed: true,
+    downloadLinks: [{ name: 'PMC Tender Opening', url: '/docs/3. PMC Tender Opening.pdf' }]
+  },
+  {
+    id: 4,
+    step: 4,
+    title: 'PMC Appointment',
+    description: 'PMC appointed to manage the project.',
+    completed: true,
+    downloadLinks: [{ name: 'PMC Appointment', url: '/docs/4. PMC Appointment.pdf' }]
+  },
+  {
+    id: 5,
+    step: 5,
+    title: 'Area Certification',
+    description: 'Certified area details obtained for planning.',
+    completed: true,
+    downloadLinks: [{ name: 'Area Certificate', url: '/docs/5. Area Certificate.pdf' }]
+  },
   { id: 6, step: 6, title: 'Feasibility Report', description: 'Feasibility study prepared by PMC.', completed: false },
   { id: 7, step: 7, title: 'Draft Tender Inviting Developer', description: 'Draft tender prepared to invite developers.', completed: false },
   { id: 8, step: 8, title: 'Final Tender for Inviting Developer', description: 'Final tender released inviting developers.', completed: false },
@@ -144,11 +179,10 @@ export default function UpdatesPage() {
                       {/* Step Number & Status Node */}
                       <div className="flex flex-col items-center">
                         <div
-                          className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold ${
-                            item.completed
+                          className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold ${item.completed
                               ? 'bg-green-500 text-white'
                               : 'bg-gray-200 text-gray-500'
-                          } z-10`}
+                            } z-10`}
                         >
                           {item.completed ? (
                             <CheckCircle2 className="w-8 h-8" />
@@ -158,9 +192,8 @@ export default function UpdatesPage() {
                         </div>
                         {index < timelineItems.length - 1 && (
                           <div
-                            className={`w-0.5 flex-1 mt-2 ${
-                              item.completed ? 'bg-green-500' : 'bg-gray-300'
-                            }`}
+                            className={`w-0.5 flex-1 mt-2 ${item.completed ? 'bg-green-500' : 'bg-gray-300'
+                              }`}
                             style={{ minHeight: '40px' }}
                           ></div>
                         )}
@@ -208,8 +241,39 @@ export default function UpdatesPage() {
                                     Download Documents
                                   </span>
                                 </div>
-                                
+
                                 {/* Note: Static links are not tracked. Only admin-uploaded documents are tracked. */}
+
+                                {item.downloadLinks && item.downloadLinks.length > 0 && (
+                                  <div className="space-y-2 mb-4">
+                                    {item.downloadLinks.map((link, idx) => (
+                                      <div
+                                        key={idx}
+                                        className="flex items-center gap-3 p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors group"
+                                      >
+                                        <FileText className="w-5 h-5 text-blue-600 group-hover:text-primary transition-colors flex-shrink-0" />
+                                        <div className="flex-1">
+                                          <a
+                                            href={link.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-gray-700 group-hover:text-primary transition-colors font-medium block"
+                                          >
+                                            {link.name}
+                                          </a>
+                                        </div>
+                                        <a
+                                          href={link.url}
+                                          download
+                                          className="p-2 text-gray-400 hover:text-primary transition-colors"
+                                          aria-label="Download"
+                                        >
+                                          <Download className="w-4 h-4" />
+                                        </a>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
 
                                 {/* Show uploaded documents from admin */}
                                 {loadingDocuments[item.id] ? (
@@ -225,26 +289,28 @@ export default function UpdatesPage() {
                                       >
                                         <FileText className="w-5 h-5 text-gray-600 group-hover:text-primary transition-colors flex-shrink-0" />
                                         <div className="flex-1">
+                                          <a
+                                            href={`/api/documents/download?id=${doc.id}`}
+                                            className="text-gray-700 group-hover:text-primary transition-colors font-medium block"
+                                          >
+                                            {doc.name}
+                                          </a>
+                                          <p className="text-xs text-gray-500 mt-1">
+                                            Uploaded on {formatDate(doc.uploadDate)}
+                                          </p>
+                                        </div>
                                         <a
                                           href={`/api/documents/download?id=${doc.id}`}
-                                          className="text-gray-700 group-hover:text-primary transition-colors font-medium block"
+                                          className="p-2 text-gray-400 hover:text-primary transition-colors"
+                                          aria-label="Download"
                                         >
-                                          {doc.name}
+                                          <Download className="w-4 h-4" />
                                         </a>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                          Uploaded on {formatDate(doc.uploadDate)}
-                                        </p>
-                                      </div>
-                                      <a
-                                        href={`/api/documents/download?id=${doc.id}`}
-                                        className="p-2 text-gray-400 hover:text-primary transition-colors"
-                                        aria-label="Download"
-                                      >
-                                        <Download className="w-4 h-4" />
-                                      </a>
                                       </div>
                                     ))}
                                   </div>
+                                ) : (!item.downloadLinks || item.downloadLinks.length === 0) ? (
+                                  <p className="text-sm text-gray-500 italic">No documents available for this stage yet.</p>
                                 ) : null}
                               </div>
                             </div>

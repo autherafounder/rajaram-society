@@ -11,12 +11,11 @@ const galleryCategories = {
   old: {
     title: 'Old Building Photos',
     images: [
-      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1567443023421-de300200c4c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1558036117-15d82a90b9b1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      '/images/old-building/nightimageofjaijawanchs2.jpeg',
+      '/images/old-building/nightimageofjaijawanchs3.jpeg',
+      '/images/old-building/daylightimageofjaijawanchs.jpeg',
+      '/images/old-building/daylightiamgeofjaijawanchs2.jpeg',
+      '/images/old-building/nightimageofjaijawanchs.jpeg',
     ],
   },
   new: {
@@ -60,7 +59,7 @@ export default function GalleryPage() {
       <Header />
       <main>
         <Hero />
-        
+
         <section className="py-16 bg-gray-50">
           <div className="container mx-auto px-4">
             {/* Category Tabs */}
@@ -69,11 +68,10 @@ export default function GalleryPage() {
                 <button
                   key={key}
                   onClick={() => setSelectedCategory(key)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
-                    selectedCategory === key
+                  className={`px-6 py-3 rounded-lg font-semibold transition-colors ${selectedCategory === key
                       ? 'bg-primary text-white'
                       : 'bg-white text-gray-700 hover:bg-gray-100'
-                  }`}
+                    }`}
                 >
                   {galleryCategories[key].title}
                 </button>

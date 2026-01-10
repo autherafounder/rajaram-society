@@ -5,9 +5,11 @@ import type { NextRequest } from 'next/server';
 export async function middleware(req: NextRequest) {
     const res = NextResponse.next();
 
-    // Skip Supabase middleware if environment variables are not set yet
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-        console.warn('Supabase environment variables not configured. Skipping auth middleware.');
+    // Skip Supabase middleware if environment variables are not set yet or are placeholders
+    const isPlaceholder = (val?: string) => !val || val.includes('your_supabase_') || val === 'your-secret-key-change-in-production';
+
+    if (isPlaceholder(process.env.NEXT_PUBLIC_SUPABASE_URL) || isPlaceholder(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
+        console.warn('Supabase environment variables not configured or using placeholders. Skipping auth middleware.');
         return res;
     }
 

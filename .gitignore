@@ -44,3 +44,5 @@ next-env.d.ts
 
 # Keep upload directory structure
 !/public/uploads/.gitkeep
+
+.vercel

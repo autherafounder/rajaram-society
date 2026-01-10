@@ -2,6 +2,7 @@
   "name": "jaijawan-chs-website",
   "version": "0.1.0",
   "private": true,
+  "author": "Authera Founder <authera.founder@gmail.com>",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

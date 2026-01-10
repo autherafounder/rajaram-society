@@ -1,12 +1,8 @@
-import dynamic from 'next/dynamic';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import Footer from '@/components/Footer';
 
-// Dynamically import heavy components to reduce initial bundle size
-const ProjectsCarousel = dynamic(() => import('@/components/ProjectsCarousel'), {
-  ssr: true,
-});
+
 
 export default function Home() {
   return (
@@ -14,7 +10,6 @@ export default function Home() {
       <Header />
       <main className="pt-20">
         <Hero />
-        <ProjectsCarousel />
 
         {/* Society Information Section */}
         <section className="py-16 bg-white">

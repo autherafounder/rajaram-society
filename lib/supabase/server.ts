@@ -3,9 +3,11 @@ import { cookies } from 'next/headers';
 import type { Database } from './client';
 
 export const createServerClient = () => {
-    // Check if environment variables are available
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-        console.warn('Supabase environment variables not set');
+    // Check if environment variables are available and not placeholders
+    const isPlaceholder = (val?: string) => !val || val.includes('your_supabase_') || val === 'your-secret-key-change-in-production';
+
+    if (isPlaceholder(process.env.NEXT_PUBLIC_SUPABASE_URL) || isPlaceholder(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
+        console.warn('Supabase environment variables not set or using placeholders');
         // Return a minimal client that won't crash during build
         return null as any;
     }

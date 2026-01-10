@@ -179,7 +179,7 @@ export default function ContactPage() {
                 <h3 className="font-semibold text-gray-800 mb-4">Get Directions</h3>
                 <div className="w-full h-64 rounded-lg overflow-hidden">
                   <iframe
-                    src="https://maps.app.goo.gl/e529kCTq2tn9nkVy7"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1905.0699917208397!2d72.9979326!3d19.0698837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c14bca257565%3A0x4005d3cb16227686!2sJai%20Jawan%20Chs!5e1!3m2!1sen!2sin!4v1768051610947!5m2!1sen!2sin"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
