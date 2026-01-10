@@ -212,10 +212,10 @@ export default function PrivacyPolicyPage() {
                   <div>
                     <p className="text-sm font-semibold text-gray-800 mb-1">Email:</p>
                     <a
-                      href="mailto:privacy@jaijawanchs.com"
+                      href="mailto:redevjaijawanchs@gmail.com"
                       className="text-gray-700 hover:text-primary transition-colors"
                     >
-                      privacy@jaijawanchs.com
+                      redevjaijawanchs@gmail.com
                     </a>
                   </div>
                 </div>
@@ -224,10 +224,10 @@ export default function PrivacyPolicyPage() {
                   <div>
                     <p className="text-sm font-semibold text-gray-800 mb-1">Phone:</p>
                     <a
-                      href="tel:+91-XXXXX-XXXXX"
+                      href="tel:+919769649449"
                       className="text-gray-700 hover:text-primary transition-colors"
                     >
-                      +91-XXXXX-XXXXX
+                      +91 97696 49449
                     </a>
                   </div>
                 </div>
