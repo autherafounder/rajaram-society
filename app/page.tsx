@@ -27,7 +27,7 @@ export default function Home() {
                 Jai Jawan Co-Operative Housing Society is a registered cooperative housing society established under the provisions of the Maharashtra Co-operative Societies Act, 1960. The society&apos;s registration number is <strong>TNA/HSG/1077/81</strong>, and its registered office is located at: <strong>Plot No. 01, Sector 17, Vashi, Navi Mumbai – 400703</strong>.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                The society occupies a plot of land measuring approximately <strong>1850 sq.m.</strong>, as per the approved old building sanction plan, and conveyance deed. Originally established in 1981, Jai Jawan Co-Operative Housing Society consists of a single standalone building of G+4 storeys, with 72 residential units and 45 commercial units. The property is conveniently located with an adjoining road of 19+30 meters.
+                The society occupies a plot of land measuring approximately <strong>1850 sq.m.</strong>, as per the approved old building sanction plan, and conveyance deed. Originally established in 1981, Jai Jawan Co-Operative Housing Society consists of a single standalone building of G+4 storeys, with 70 residential units and 45 commercial units. The property is conveniently located with an adjoining road of 19+30 meters.
               </p>
             </div>
 
