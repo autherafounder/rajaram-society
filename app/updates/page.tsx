@@ -171,7 +171,7 @@ export default function UpdatesPage() {
               <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-300"></div>
 
               {/* Timeline Items */}
-              <div className="space-y-8">
+              <div>
                 {timelineItems.map((item, index) => {
                   const isExpanded = expandedItems.has(item.id);
                   return (
@@ -180,8 +180,8 @@ export default function UpdatesPage() {
                       <div className="flex flex-col items-center">
                         <div
                           className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold ${item.completed
-                              ? 'bg-green-500 text-white'
-                              : 'bg-gray-200 text-gray-500'
+                            ? 'bg-green-500 text-white'
+                            : 'bg-gray-200 text-gray-500'
                             } z-10`}
                         >
                           {item.completed ? (
@@ -192,7 +192,7 @@ export default function UpdatesPage() {
                         </div>
                         {index < timelineItems.length - 1 && (
                           <div
-                            className={`w-0.5 flex-1 mt-2 ${item.completed ? 'bg-green-500' : 'bg-gray-300'
+                            className={`w-0.5 flex-1 ${item.completed ? 'bg-green-500' : 'bg-gray-300'
                               }`}
                             style={{ minHeight: '40px' }}
                           ></div>
