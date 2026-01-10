@@ -80,7 +80,9 @@ export default function Footer() {
                 <div>
                   <span className="text-gray-400 text-sm block mb-0.5">Address:</span>
                   <span className="text-gray-300">
-                    Jai Jawan CHS, Mumbai
+                    Jai Jawan Co-Operative Housing Society<br />
+                    Plot No. 01, Sector 17, Vashi,<br />
+                    Navi Mumbai – 400703
                   </span>
                 </div>
               </li>
