@@ -56,10 +56,10 @@ export default function Footer() {
                 <div>
                   <span className="text-gray-400 text-sm block mb-0.5">Email:</span>
                   <a
-                    href="mailto:info@jaijawanchs.com"
+                    href="mailto:redevjaijawanchs@gmail.com"
                     className="text-gray-300 hover:text-primary transition-colors"
                   >
-                    info@jaijawanchs.com
+                    redevjaijawanchs@gmail.com
                   </a>
                 </div>
               </li>
