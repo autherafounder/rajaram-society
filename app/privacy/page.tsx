@@ -14,10 +14,10 @@ export default function PrivacyPolicyPage() {
               Privacy Policy
             </h1>
             <p className="text-lg text-gray-600">
-              Last updated: {new Date().toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              Last updated: {new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
               })}
             </p>
           </div>
@@ -28,8 +28,8 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Introduction</h2>
               <p className="text-gray-700 leading-relaxed">
-                Jaijawan Chs (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting 
-                your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard 
+                Jai Jawan CHS (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting
+                your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard
                 your information when you visit our website and use our services.
               </p>
             </section>
@@ -52,7 +52,7 @@ export default function PrivacyPolicyPage() {
                     <li>Participate in surveys or feedback forms</li>
                   </ul>
                   <p className="text-gray-700 leading-relaxed mt-4">
-                    This information may include: name, email address, phone number, flat/unit number, 
+                    This information may include: name, email address, phone number, flat/unit number,
                     and any other information you choose to provide.
                   </p>
                 </div>
@@ -60,7 +60,7 @@ export default function PrivacyPolicyPage() {
                 <div>
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">Automatically Collected Information</h3>
                   <p className="text-gray-700 leading-relaxed">
-                    When you visit our website, we may automatically collect certain information about 
+                    When you visit our website, we may automatically collect certain information about
                     your device, including:
                   </p>
                   <ul className="list-disc list-inside mt-2 space-y-2 text-gray-700 ml-4">
@@ -96,24 +96,24 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Information Sharing and Disclosure</h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                We do not sell, trade, or rent your personal information to third parties. We may 
+                We do not sell, trade, or rent your personal information to third parties. We may
                 share your information only in the following circumstances:
               </p>
               <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
                 <li>
-                  <strong>Service Providers:</strong> We may share information with third-party 
+                  <strong>Service Providers:</strong> We may share information with third-party
                   service providers who assist us in operating our website and conducting our business
                 </li>
                 <li>
-                  <strong>Legal Requirements:</strong> We may disclose information when required by 
+                  <strong>Legal Requirements:</strong> We may disclose information when required by
                   law or to protect our rights and the safety of our users
                 </li>
                 <li>
-                  <strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale 
+                  <strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale
                   of assets, your information may be transferred
                 </li>
                 <li>
-                  <strong>With Your Consent:</strong> We may share your information with your 
+                  <strong>With Your Consent:</strong> We may share your information with your
                   explicit consent
                 </li>
               </ul>
@@ -123,9 +123,9 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Data Security</h2>
               <p className="text-gray-700 leading-relaxed">
-                We implement appropriate technical and organizational security measures to protect 
-                your personal information against unauthorized access, alteration, disclosure, or 
-                destruction. However, no method of transmission over the Internet or electronic 
+                We implement appropriate technical and organizational security measures to protect
+                your personal information against unauthorized access, alteration, disclosure, or
+                destruction. However, no method of transmission over the Internet or electronic
                 storage is 100% secure, and we cannot guarantee absolute security.
               </p>
             </section>
@@ -162,9 +162,9 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Cookies and Tracking Technologies</h2>
               <p className="text-gray-700 leading-relaxed">
-                We use cookies and similar tracking technologies to track activity on our website 
-                and hold certain information. You can instruct your browser to refuse all cookies 
-                or to indicate when a cookie is being sent. However, if you do not accept cookies, 
+                We use cookies and similar tracking technologies to track activity on our website
+                and hold certain information. You can instruct your browser to refuse all cookies
+                or to indicate when a cookie is being sent. However, if you do not accept cookies,
                 you may not be able to use some portions of our website.
               </p>
             </section>
@@ -173,8 +173,8 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Third-Party Links</h2>
               <p className="text-gray-700 leading-relaxed">
-                Our website may contain links to third-party websites. We are not responsible for 
-                the privacy practices or content of these external sites. We encourage you to read 
+                Our website may contain links to third-party websites. We are not responsible for
+                the privacy practices or content of these external sites. We encourage you to read
                 the privacy policies of any third-party sites you visit.
               </p>
             </section>
@@ -183,8 +183,8 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Children&apos;s Privacy</h2>
               <p className="text-gray-700 leading-relaxed">
-                Our services are not intended for individuals under the age of 18. We do not 
-                knowingly collect personal information from children. If you believe we have 
+                Our services are not intended for individuals under the age of 18. We do not
+                knowingly collect personal information from children. If you believe we have
                 collected information from a child, please contact us immediately.
               </p>
             </section>
@@ -193,9 +193,9 @@ export default function PrivacyPolicyPage() {
             <section>
               <h2 className="text-2xl font-bold text-gray-800 mb-4">Changes to This Privacy Policy</h2>
               <p className="text-gray-700 leading-relaxed">
-                We may update our Privacy Policy from time to time. We will notify you of any 
-                changes by posting the new Privacy Policy on this page and updating the &quot;Last 
-                updated&quot; date. You are advised to review this Privacy Policy periodically 
+                We may update our Privacy Policy from time to time. We will notify you of any
+                changes by posting the new Privacy Policy on this page and updating the &quot;Last
+                updated&quot; date. You are advised to review this Privacy Policy periodically
                 for any changes.
               </p>
             </section>
@@ -211,8 +211,8 @@ export default function PrivacyPolicyPage() {
                   <Mail className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                   <div>
                     <p className="text-sm font-semibold text-gray-800 mb-1">Email:</p>
-                    <a 
-                      href="mailto:privacy@jaijawanchs.com" 
+                    <a
+                      href="mailto:privacy@jaijawanchs.com"
                       className="text-gray-700 hover:text-primary transition-colors"
                     >
                       privacy@jaijawanchs.com
@@ -223,8 +223,8 @@ export default function PrivacyPolicyPage() {
                   <Phone className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                   <div>
                     <p className="text-sm font-semibold text-gray-800 mb-1">Phone:</p>
-                    <a 
-                      href="tel:+91-XXXXX-XXXXX" 
+                    <a
+                      href="tel:+91-XXXXX-XXXXX"
                       className="text-gray-700 hover:text-primary transition-colors"
                     >
                       +91-XXXXX-XXXXX
@@ -236,7 +236,7 @@ export default function PrivacyPolicyPage() {
                   <div>
                     <p className="text-sm font-semibold text-gray-800 mb-1">Address:</p>
                     <p className="text-gray-700">
-                      Jaijawan Chs Office, Mumbai, Maharashtra, India
+                      Jai Jawan CHS Office, Mumbai, Maharashtra, India
                     </p>
                   </div>
                 </div>

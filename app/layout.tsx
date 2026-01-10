@@ -5,23 +5,23 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Jaijawan Chs - Building Our Future, Together",
+  title: "Jai Jawan CHS - Building Our Future, Together",
   description: "Modern real estate and construction company website",
   keywords: ["real estate", "construction", "society", "property", "residential"],
-  authors: [{ name: "Jaijawan Chs" }],
-  creator: "Jaijawan Chs",
-  publisher: "Jaijawan Chs",
+  authors: [{ name: "Jai Jawan CHS" }],
+  creator: "Jai Jawan CHS",
+  publisher: "Jai Jawan CHS",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    title: "Jaijawan Chs - Building Our Future, Together",
+    title: "Jai Jawan CHS - Building Our Future, Together",
     description: "Modern real estate and construction company website",
     type: "website",
     locale: "en_IN",
-    siteName: "Jaijawan Chs",
+    siteName: "Jai Jawan CHS",
   },
 };
 

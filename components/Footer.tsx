@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Company Info */}
           <div>
-            <h3 className="text-white text-xl font-bold mb-4">Jaijawan Chs</h3>
+            <h3 className="text-white text-xl font-bold mb-4">Jai Jawan CHS</h3>
             <p className="mb-4">
               Building communities and shaping the future through quality construction
               and sustainable development.
@@ -80,7 +80,7 @@ export default function Footer() {
                 <div>
                   <span className="text-gray-400 text-sm block mb-0.5">Address:</span>
                   <span className="text-gray-300">
-                    Jaijawan Chs, Mumbai
+                    Jai Jawan CHS, Mumbai
                   </span>
                 </div>
               </li>
@@ -91,7 +91,7 @@ export default function Footer() {
         <div className="border-t border-gray-700 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
-              <p>&copy; {new Date().getFullYear()} Jaijawan Chs. All rights reserved.</p>
+              <p>&copy; {new Date().getFullYear()} Jai Jawan CHS. All rights reserved.</p>
             </div>
             {/* Social Media Icons */}
             <div className="flex items-center gap-4">

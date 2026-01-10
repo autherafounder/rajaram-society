@@ -15,12 +15,12 @@ export default function AdminLoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
     setError('');
-    
+
     try {
       const response = await fetch('/api/admin/auth/login', {
         method: 'POST',
@@ -34,11 +34,11 @@ export default function AdminLoginPage() {
       }
 
       const data = await response.json();
-      
+
       // Token is stored in HTTP-only cookie by server
       // Store a flag in localStorage for client-side checks
       localStorage.setItem('adminToken', 'authenticated');
-      
+
       // Redirect to admin dashboard
       router.push('/admin');
     } catch (error) {
@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
           <div className="relative w-20 h-20 rounded-full overflow-hidden ring-2 ring-primary/20 shadow-md">
             <Image
               src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-              alt="Jaijawan Chs Logo"
+              alt="Jai Jawan CHS Logo"
               fill
               sizes="80px"
               className="object-cover"

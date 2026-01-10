@@ -176,7 +176,7 @@ export default function SignUpPage() {
               <div className="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-primary/20 shadow-md">
                 <Image
                   src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
-                  alt="Jaijawan Chs Logo"
+                  alt="Jai Jawan CHS Logo"
                   fill
                   sizes="64px"
                   className="object-cover"
@@ -207,8 +207,8 @@ export default function SignUpPage() {
                     value={formData.fullName}
                     onChange={handleChange}
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.fullName
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-300 focus:ring-primary focus:border-transparent'
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-300 focus:ring-primary focus:border-transparent'
                       }`}
                     required
                   />
@@ -233,8 +233,8 @@ export default function SignUpPage() {
                     value={formData.email}
                     onChange={handleChange}
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.email
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-300 focus:ring-primary focus:border-transparent'
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-300 focus:ring-primary focus:border-transparent'
                       }`}
                     required
                   />
@@ -259,8 +259,8 @@ export default function SignUpPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.phone
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-300 focus:ring-primary focus:border-transparent'
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-300 focus:ring-primary focus:border-transparent'
                       }`}
                   />
                 </div>
@@ -303,8 +303,8 @@ export default function SignUpPage() {
                     value={formData.password}
                     onChange={handleChange}
                     className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.password
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-300 focus:ring-primary focus:border-transparent'
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-300 focus:ring-primary focus:border-transparent'
                       }`}
                     required
                   />
@@ -339,10 +339,10 @@ export default function SignUpPage() {
                       </div>
                       <span
                         className={`text-xs font-medium ${passwordStrength === 'weak'
-                            ? 'text-red-600'
-                            : passwordStrength === 'medium'
-                              ? 'text-yellow-600'
-                              : 'text-green-600'
+                          ? 'text-red-600'
+                          : passwordStrength === 'medium'
+                            ? 'text-yellow-600'
+                            : 'text-green-600'
                           }`}
                       >
                         {getPasswordStrengthText(passwordStrength)}
@@ -373,8 +373,8 @@ export default function SignUpPage() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 ${errors.confirmPassword
-                        ? 'border-red-500 focus:ring-red-500'
-                        : 'border-gray-300 focus:ring-primary focus:border-transparent'
+                      ? 'border-red-500 focus:ring-red-500'
+                      : 'border-gray-300 focus:ring-primary focus:border-transparent'
                       }`}
                     required
                   />
