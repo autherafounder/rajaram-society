@@ -49,7 +49,10 @@ const timelineItems: TimelineItem[] = [
     title: 'PMC Appointment',
     description: 'PMC appointed to manage the project.',
     completed: true,
-    downloadLinks: [{ name: 'PMC Appointment', url: '/docs/4. PMC Appointment.pdf' }]
+    downloadLinks: [
+      { name: 'PMC Appointment', url: '/docs/4. PMC Appointment.pdf' },
+      { name: 'Service Agreement', url: '/docs/Service Agreement.pdf' }
+    ]
   },
   {
     id: 5,
@@ -59,7 +62,19 @@ const timelineItems: TimelineItem[] = [
     completed: true,
     downloadLinks: [{ name: 'Area Certificate', url: '/docs/5. Area Certificate.pdf' }]
   },
-  { id: 6, step: 6, title: 'Feasibility Report', description: 'Feasibility study prepared by PMC.', completed: false },
+  {
+    id: 6,
+    step: 6,
+    title: 'Feasibility Report',
+    description: 'Feasibility study prepared by PMC.',
+    completed: true,
+    downloadLinks: [
+      { name: '(Residential cum Commercial) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Residential_cum_Commercial_Feasibility_Report_for_Jai_Jawan_CHS.pdf' },
+      { name: '(Commercial cum Residential) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Commercial_cum_Residential_Feasibility_Report_for_Jai_Jawan_CHS.pdf' },
+      { name: '(Commercial) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Commercial_Feasibility_Report_for_Jai_Jawan_CHS_at_P_01,_S_17,_Vashi.pdf' },
+      { name: '(Self-Redevelopment) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Self_Redevelopment_Feasibility_Report_for_Jai_Jawan_CHS_at_P_01.pdf' },
+    ]
+  },
   { id: 7, step: 7, title: 'Draft Tender Inviting Developer', description: 'Draft tender prepared to invite developers.', completed: false },
   { id: 8, step: 8, title: 'Final Tender for Inviting Developer', description: 'Final tender released inviting developers.', completed: false },
   { id: 9, step: 9, title: 'Developer Tender Opening', description: 'Developer tenders opened for evaluation.', completed: false },
