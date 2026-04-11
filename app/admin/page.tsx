@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { LayoutDashboard, FileText, Users, Calendar } from 'lucide-react';
+import { FileText, Users, Calendar } from 'lucide-react';
+import { timelineItems } from '@/data/timeline-items';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     totalDocuments: 0,
-    timelineItems: 8,
+    timelineItems: timelineItems.length,
     recentUploads: 0,
   });
 

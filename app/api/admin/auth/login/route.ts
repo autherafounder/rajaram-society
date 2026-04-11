@@ -1,18 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import fs from 'fs';
-import path from 'path';
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-const ADMIN_FILE = path.join(process.cwd(), 'data', 'admin.json');
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function POST(request: NextRequest) {
   try {
+    if (!JWT_SECRET) {
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
     const { email, password } = body;
 
-    // Validate input
     if (!email || !password) {
       return NextResponse.json(
         { error: 'Email and password are required' },
@@ -20,27 +24,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Read admin data from file
-    let adminData;
-    try {
-      if (!fs.existsSync(ADMIN_FILE)) {
-        return NextResponse.json(
-          { error: 'Admin configuration file not found' },
-          { status: 500 }
-        );
-      }
-      const fileContent = fs.readFileSync(ADMIN_FILE, 'utf-8');
-      adminData = JSON.parse(fileContent);
-    } catch (error) {
-      console.error('Error reading admin file:', error);
-      return NextResponse.json(
-        { error: 'Admin configuration not found or invalid' },
-        { status: 500 }
-      );
-    }
+    // Read admin data from Supabase
+    const { data: adminData, error } = await supabaseAdmin
+      .from('admins')
+      .select('*')
+      .eq('email', email)
+      .single();
 
-    // Check email
-    if (adminData.email !== email) {
+    if (error || !adminData) {
       return NextResponse.json(
         { error: 'Invalid credentials' },
         { status: 401 }
@@ -58,14 +49,21 @@ export async function POST(request: NextRequest) {
 
     // Generate JWT token
     const token = jwt.sign(
-      { 
+      {
         email: adminData.email,
         role: adminData.role,
-        name: adminData.name
+        name: adminData.name,
       },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
+
+    // Log admin login
+    await supabaseAdmin.from('admin_activity').insert({
+      admin_email: adminData.email,
+      action: 'login',
+      details: { timestamp: new Date().toISOString() },
+    });
 
     // Create response
     const response = NextResponse.json(
@@ -97,4 +95,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

@@ -1,43 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
-import fs from 'fs';
-import path from 'path';
-
-const DOCUMENTS_FILE = path.join(process.cwd(), 'data', 'documents.json');
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export async function GET(request: NextRequest) {
   try {
     requireAdmin(request);
 
-    // Read documents data
-    let documents = [];
-    try {
-      if (fs.existsSync(DOCUMENTS_FILE)) {
-        const fileContent = fs.readFileSync(DOCUMENTS_FILE, 'utf-8');
-        documents = JSON.parse(fileContent);
-      }
-    } catch (error) {
-      console.error('Error reading documents file:', error);
-      // Return empty array if file doesn't exist or is invalid
-      documents = [];
+    // Read documents from Supabase
+    const { data: documents, error } = await supabaseAdmin
+      .from('documents')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching documents:', error);
+      return NextResponse.json({ documents: [] }, { status: 200 });
     }
 
-    return NextResponse.json(
-      { documents },
-      { status: 200 }
-    );
+    // Map DB fields to camelCase for frontend
+    const mappedDocs = (documents || []).map((doc: any) => ({
+      id: doc.id,
+      name: doc.name,
+      timelineId: doc.timeline_id,
+      timelineTitle: doc.timeline_title,
+      url: doc.url,
+      uploadDate: doc.upload_date,
+      size: doc.size,
+    }));
+
+    return NextResponse.json({ documents: mappedDocs }, { status: 200 });
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     console.error('Documents GET error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-

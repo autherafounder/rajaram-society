@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const limitParam = searchParams.get('limit');
     const limit = limitParam ? parseInt(limitParam, 10) : undefined;
 
-    const logs = getAuditLogs(
+    const logs = await getAuditLogs(
       {
         documentId: documentId || undefined,
         userEmail: userEmail || undefined,
@@ -26,7 +26,9 @@ export async function GET(request: NextRequest) {
 
     // Calculate statistics
     const totalDownloads = logs.length;
-    const uniqueUsers = new Set(logs.filter((log) => log.userEmail).map((log) => log.userEmail)).size;
+    const uniqueUsers = new Set(
+      logs.filter((log) => log.user_email).map((log) => log.user_email)
+    ).size;
     const blockedAttempts = logs.filter((log) => log.blocked).length;
 
     const now = new Date();
@@ -37,18 +39,31 @@ export async function GET(request: NextRequest) {
     monthAgo.setMonth(monthAgo.getMonth() - 1);
 
     const downloadsToday = logs.filter(
-      (log) => new Date(log.timestamp) >= today
+      (log) => new Date(log.created_at) >= today
     ).length;
     const downloadsThisWeek = logs.filter(
-      (log) => new Date(log.timestamp) >= weekAgo
+      (log) => new Date(log.created_at) >= weekAgo
     ).length;
     const downloadsThisMonth = logs.filter(
-      (log) => new Date(log.timestamp) >= monthAgo
+      (log) => new Date(log.created_at) >= monthAgo
     ).length;
+
+    // Map to frontend-expected format
+    const mappedLogs = logs.map((log) => ({
+      id: log.id,
+      documentId: log.document_id,
+      documentName: log.document_name,
+      timelineId: log.timeline_id,
+      timelineTitle: log.timeline_title,
+      userEmail: log.user_email,
+      userIP: log.user_ip,
+      timestamp: log.created_at,
+      blocked: log.blocked,
+    }));
 
     return NextResponse.json(
       {
-        logs,
+        logs: mappedLogs,
         statistics: {
           totalDownloads,
           uniqueUsers,
@@ -62,16 +77,9 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     console.error('Audit log GET error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-

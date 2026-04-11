@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-const DOCUMENTS_FILE = path.join(process.cwd(), 'data', 'documents.json');
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export async function GET(
   request: NextRequest,
@@ -18,30 +15,31 @@ export async function GET(
       );
     }
 
-    // Read documents
-    let documents = [];
-    try {
-      if (fs.existsSync(DOCUMENTS_FILE)) {
-        const fileContent = fs.readFileSync(DOCUMENTS_FILE, 'utf-8');
-        documents = JSON.parse(fileContent);
-      }
-    } catch (error) {
-      console.error('Error reading documents file:', error);
-      documents = [];
+    // Fetch documents from Supabase
+    const { data: documents, error } = await supabaseAdmin
+      .from('documents')
+      .select('*')
+      .eq('timeline_id', timelineId)
+      .order('upload_date', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching timeline documents:', error);
+      return NextResponse.json({ documents: [] }, { status: 200 });
     }
 
-    // Filter documents for this timeline item
-    const timelineDocuments = documents.filter(
-      (doc: any) => doc.timelineId === timelineId
-    );
-
-    // Sort by upload date (newest first)
-    timelineDocuments.sort((a: any, b: any) => {
-      return new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime();
-    });
+    // Map to frontend format
+    const mappedDocs = (documents || []).map((doc: any) => ({
+      id: doc.id,
+      name: doc.name,
+      timelineId: doc.timeline_id,
+      timelineTitle: doc.timeline_title,
+      url: doc.url,
+      uploadDate: doc.upload_date,
+      size: doc.size,
+    }));
 
     return NextResponse.json(
-      { documents: timelineDocuments },
+      { documents: mappedDocs },
       { status: 200 }
     );
   } catch (error) {
@@ -52,4 +50,3 @@ export async function GET(
     );
   }
 }
-

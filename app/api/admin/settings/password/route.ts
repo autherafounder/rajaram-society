@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
-import fs from 'fs';
-import path from 'path';
-
-const ADMIN_FILE = path.join(process.cwd(), 'data', 'admin.json');
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export async function PUT(request: NextRequest) {
   try {
@@ -19,21 +16,23 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Read admin data
-    let adminData;
-    try {
-      if (!fs.existsSync(ADMIN_FILE)) {
-        return NextResponse.json(
-          { error: 'Admin configuration file not found' },
-          { status: 500 }
-        );
-      }
-      const fileContent = fs.readFileSync(ADMIN_FILE, 'utf-8');
-      adminData = JSON.parse(fileContent);
-    } catch (error) {
-      console.error('Error reading admin file:', error);
+    if (newPassword.length < 8) {
       return NextResponse.json(
-        { error: 'Admin configuration not found' },
+        { error: 'New password must be at least 8 characters' },
+        { status: 400 }
+      );
+    }
+
+    // Read admin data from Supabase
+    const { data: adminData, error: fetchError } = await supabaseAdmin
+      .from('admins')
+      .select('*')
+      .eq('email', admin.email)
+      .single();
+
+    if (fetchError || !adminData) {
+      return NextResponse.json(
+        { error: 'Admin not found' },
         { status: 500 }
       );
     }
@@ -50,19 +49,29 @@ export async function PUT(request: NextRequest) {
     // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update password
-    adminData.password = hashedPassword;
+    // Update password in Supabase
+    const { error: updateError } = await supabaseAdmin
+      .from('admins')
+      .update({
+        password: hashedPassword,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('email', admin.email);
 
-    // Save updated data
-    try {
-      fs.writeFileSync(ADMIN_FILE, JSON.stringify(adminData, null, 2));
-    } catch (error) {
-      console.error('Error writing admin file:', error);
+    if (updateError) {
+      console.error('Error updating password:', updateError);
       return NextResponse.json(
         { error: 'Failed to update password' },
         { status: 500 }
       );
     }
+
+    // Log activity
+    await supabaseAdmin.from('admin_activity').insert({
+      admin_email: admin.email,
+      action: 'password_change',
+      details: { timestamp: new Date().toISOString() },
+    });
 
     return NextResponse.json(
       { message: 'Password changed successfully' },
@@ -70,15 +79,8 @@ export async function PUT(request: NextRequest) {
     );
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-

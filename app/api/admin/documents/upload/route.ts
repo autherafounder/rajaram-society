@@ -1,31 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
-import { writeFile } from 'fs/promises';
-import fs from 'fs';
-import path from 'path';
-
-const DOCUMENTS_FILE = path.join(process.cwd(), 'data', 'documents.json');
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
-
-const timelineItems: Record<number, string> = {
-  1: 'Resolution of Redevelopment',
-  2: 'PMC Invitation',
-  3: 'PMC Tender Opening',
-  4: 'Area Certificate Opening',
-  5: 'Feasibility Report',
-  6: 'Results of Bidders',
-  7: 'Tender Award',
-  8: 'Construction Commencement',
-};
+import { supabaseAdmin } from '@/lib/supabase/admin';
+import { getTimelineTitle } from '@/data/timeline-items';
 
 export async function POST(request: NextRequest) {
   try {
-    requireAdmin(request);
-
-    // Ensure upload directory exists
-    if (!fs.existsSync(UPLOAD_DIR)) {
-      fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-    }
+    const admin = requireAdmin(request);
 
     const formData = await request.formData();
     const file = formData.get('file') as File;
@@ -40,7 +20,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate file type
-    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
         { error: 'Invalid file type. Only PDF and DOC/DOCX files are allowed.' },
@@ -58,85 +42,88 @@ export async function POST(request: NextRequest) {
 
     // Sanitize filename
     const sanitizedName = name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const fileExtension = path.extname(file.name);
-    const newFileName = `${sanitizedName}_${Date.now()}${fileExtension}`;
-    
-    // Create timeline-specific directory
-    const timelineDir = path.join(UPLOAD_DIR, timelineId);
-    if (!fs.existsSync(timelineDir)) {
-      fs.mkdirSync(timelineDir, { recursive: true });
-    }
+    const fileExtension = file.name.split('.').pop() || 'pdf';
+    const storagePath = `timeline-${timelineId}/${sanitizedName}_${Date.now()}.${fileExtension}`;
 
-    // Save file
+    // Upload to Supabase Storage
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    const finalPath = path.join(timelineDir, newFileName);
-    await writeFile(finalPath, buffer);
 
-    // Generate URL
-    const url = `/uploads/${timelineId}/${newFileName}`;
+    const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
+      .from('documents')
+      .upload(storagePath, buffer, {
+        contentType: file.type,
+        upsert: false,
+      });
 
-    // Read existing documents
-    let documents = [];
-    try {
-      if (fs.existsSync(DOCUMENTS_FILE)) {
-        const fileContent = fs.readFileSync(DOCUMENTS_FILE, 'utf-8');
-        documents = JSON.parse(fileContent);
-      }
-    } catch (error) {
-      console.error('Error reading documents file:', error);
-      documents = [];
+    if (uploadError) {
+      console.error('Storage upload error:', uploadError);
+      return NextResponse.json(
+        { error: 'Failed to upload file to storage' },
+        { status: 500 }
+      );
     }
 
-    // Add new document
-    const newDocument = {
-      id: Date.now().toString(),
-      name: name,
-      timelineId: parseInt(timelineId),
-      timelineTitle: timelineItems[parseInt(timelineId)] || 'Unknown',
-      url: url,
-      uploadDate: new Date().toISOString(),
-      size: file.size,
-    };
+    // Get the public URL
+    const { data: urlData } = supabaseAdmin.storage
+      .from('documents')
+      .getPublicUrl(storagePath);
 
-    documents.push(newDocument);
+    const publicUrl = urlData.publicUrl;
+    const timelineTitle = getTimelineTitle(parseInt(timelineId));
 
-    // Save documents
-    try {
-      fs.writeFileSync(DOCUMENTS_FILE, JSON.stringify(documents, null, 2));
-    } catch (error) {
-      console.error('Error saving documents file:', error);
-      // Delete uploaded file if we can't save metadata
-      try {
-        fs.unlinkSync(finalPath);
-      } catch (unlinkError) {
-        console.error('Error deleting uploaded file:', unlinkError);
-      }
+    // Save document metadata to Supabase
+    const { data: newDoc, error: dbError } = await supabaseAdmin
+      .from('documents')
+      .insert({
+        name: name,
+        timeline_id: parseInt(timelineId),
+        timeline_title: timelineTitle,
+        url: publicUrl,
+        file_path: storagePath,
+        size: file.size,
+        uploaded_by: admin.email,
+      })
+      .select()
+      .single();
+
+    if (dbError) {
+      console.error('Database insert error:', dbError);
+      // Cleanup: delete uploaded file
+      await supabaseAdmin.storage.from('documents').remove([storagePath]);
       return NextResponse.json(
         { error: 'Failed to save document metadata' },
         { status: 500 }
       );
     }
 
+    // Log admin activity
+    await supabaseAdmin.from('admin_activity').insert({
+      admin_email: admin.email,
+      action: 'document_upload',
+      details: { documentId: newDoc.id, name, timelineId: parseInt(timelineId) },
+    });
+
     return NextResponse.json(
       {
         message: 'Document uploaded successfully',
-        document: newDocument,
+        document: {
+          id: newDoc.id,
+          name: newDoc.name,
+          timelineId: newDoc.timeline_id,
+          timelineTitle: newDoc.timeline_title,
+          url: newDoc.url,
+          uploadDate: newDoc.upload_date,
+          size: newDoc.size,
+        },
       },
       { status: 200 }
     );
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     console.error('Upload error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-

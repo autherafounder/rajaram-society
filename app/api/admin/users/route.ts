@@ -1,42 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
-import { getAuditLogs, getBlockedUsers, blockUser, unblockUser } from '@/lib/download-tracking';
+import { getAuditLogs, getBlockedUsers, blockUser } from '@/lib/download-tracking';
 
 export async function GET(request: NextRequest) {
   try {
-    const admin = requireAdmin(request);
+    requireAdmin(request);
 
-    // Get all audit logs to extract user information
-    const logs = getAuditLogs();
-    const blockedUsers = getBlockedUsers();
+    const logs = await getAuditLogs();
+    const blockedUsers = await getBlockedUsers();
 
     // Aggregate user statistics
-    const userStatsMap = new Map<string, {
-      email: string;
-      totalDownloads: number;
-      lastDownloadAt: string | null;
-      documentDownloads: Map<string, number>;
-    }>();
+    const userStatsMap = new Map<
+      string,
+      {
+        email: string;
+        totalDownloads: number;
+        lastDownloadAt: string | null;
+      }
+    >();
 
     logs.forEach((log) => {
-      if (log.userEmail) {
-        if (!userStatsMap.has(log.userEmail)) {
-          userStatsMap.set(log.userEmail, {
-            email: log.userEmail,
+      if (log.user_email) {
+        if (!userStatsMap.has(log.user_email)) {
+          userStatsMap.set(log.user_email, {
+            email: log.user_email,
             totalDownloads: 0,
             lastDownloadAt: null,
-            documentDownloads: new Map(),
           });
         }
 
-        const stats = userStatsMap.get(log.userEmail)!;
+        const stats = userStatsMap.get(log.user_email)!;
         stats.totalDownloads++;
-        if (!stats.lastDownloadAt || log.timestamp > stats.lastDownloadAt) {
-          stats.lastDownloadAt = log.timestamp;
+        if (!stats.lastDownloadAt || log.created_at > stats.lastDownloadAt) {
+          stats.lastDownloadAt = log.created_at;
         }
-        
-        const docCount = stats.documentDownloads.get(log.documentId) || 0;
-        stats.documentDownloads.set(log.documentId, docCount + 1);
       }
     });
 
@@ -54,25 +51,28 @@ export async function GET(request: NextRequest) {
       };
     });
 
-    // Sort by total downloads descending
     users.sort((a, b) => b.totalDownloads - a.totalDownloads);
 
+    // Map blocked users for frontend
+    const mappedBlocked = blockedUsers.map((b) => ({
+      id: b.id,
+      identifier: b.identifier,
+      type: b.type,
+      reason: b.reason,
+      blockedAt: b.created_at,
+      blockedBy: b.blocked_by,
+    }));
+
     return NextResponse.json(
-      { users, blockedUsers },
+      { users, blockedUsers: mappedBlocked },
       { status: 200 }
     );
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     console.error('Users GET error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    blockUser(identifier, type, reason, admin.email);
+    await blockUser(identifier, type, reason, admin.email);
 
     return NextResponse.json(
       { message: 'User blocked successfully' },
@@ -104,16 +104,9 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     if (error instanceof Error && error.message === 'Unauthorized') {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     console.error('Users POST error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-
