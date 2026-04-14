@@ -35,12 +35,38 @@ export function getAdminUser(request: NextRequest): AdminUser | null {
       return null;
     }
 
-    // Verify token
+    // Verify token with explicit options
     try {
-      const decoded = jwt.verify(adminToken, JWT_SECRET) as AdminUser;
-      return decoded;
+      const decoded = jwt.verify(adminToken, JWT_SECRET, {
+        algorithms: ['HS256'],
+        maxAge: '24h', // Reject tokens older than 24 hours
+      }) as jwt.JwtPayload & AdminUser;
+
+      // Validate required fields exist
+      if (!decoded.email || !decoded.role) {
+        console.error('JWT missing required fields (email/role)');
+        return null;
+      }
+
+      // Validate role is admin
+      if (decoded.role !== 'admin') {
+        console.error(`JWT role mismatch: expected 'admin', got '${decoded.role}'`);
+        return null;
+      }
+
+      return {
+        email: decoded.email,
+        role: decoded.role,
+        name: decoded.name || 'Admin',
+      };
     } catch (jwtError) {
-      console.error('JWT verification error:', jwtError);
+      if (jwtError instanceof jwt.TokenExpiredError) {
+        console.warn('JWT token expired');
+      } else if (jwtError instanceof jwt.JsonWebTokenError) {
+        console.warn('JWT verification failed:', jwtError.message);
+      } else {
+        console.error('JWT verification error:', jwtError);
+      }
       return null;
     }
   } catch (error) {

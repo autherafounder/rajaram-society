@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { Upload, FileText, Trash2, Download, Calendar } from 'lucide-react';
 import { timelineItems } from '@/data/timeline-items';
+import Toast, { useToast } from '@/components/Toast';
+import ConfirmModal from '@/components/ConfirmModal';
 
 interface Document {
   id: string;
@@ -24,7 +26,9 @@ export default function AdminDocumentsPage() {
     timelineId: '',
     name: '',
   });
-  const [message, setMessage] = useState({ type: '', text: '' });
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { showToast, ToastContainer } = useToast();
 
   useEffect(() => {
     fetchDocuments();
@@ -47,6 +51,7 @@ export default function AdminDocumentsPage() {
       }
     } catch (error) {
       console.error('Error fetching documents:', error);
+      showToast('Failed to load documents', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -81,31 +86,42 @@ export default function AdminDocumentsPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      // Client-side validation
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel',
+      ];
+
+      if (!allowedTypes.includes(file.type)) {
+        showToast('Please upload a PDF, DOC/DOCX, or XLS/XLSX file', 'error');
+        e.target.value = '';
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('File size must be less than 10MB', 'error');
+        e.target.value = '';
+        return;
+      }
+
       setUploadForm({
         ...uploadForm,
-        file: e.target.files[0],
-        name: e.target.files[0].name.replace(/\.[^/.]+$/, ''),
+        file,
+        name: file.name.replace(/\.[^/.]+$/, ''),
       });
     }
   };
 
   const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage({ type: '', text: '' });
 
     if (!uploadForm.file || !uploadForm.timelineId || !uploadForm.name) {
-      setMessage({ type: 'error', text: 'Please fill in all fields' });
-      return;
-    }
-
-    // Validate file type
-    const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ];
-    if (!allowedTypes.includes(uploadForm.file.type)) {
-      setMessage({ type: 'error', text: 'Please upload a PDF or DOC/DOCX file' });
+      showToast('Please fill in all fields', 'error');
       return;
     }
 
@@ -124,7 +140,7 @@ export default function AdminDocumentsPage() {
       });
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Document uploaded successfully!' });
+        showToast('Document uploaded successfully!', 'success');
         setUploadForm({ file: null, timelineId: '', name: '' });
         // Reset file input
         const fileInput = document.getElementById('file') as HTMLInputElement;
@@ -132,35 +148,37 @@ export default function AdminDocumentsPage() {
         fetchDocuments();
       } else {
         const error = await response.json();
-        setMessage({ type: 'error', text: error.error || 'Failed to upload document' });
+        showToast(error.error || 'Failed to upload document', 'error');
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+      showToast('An error occurred. Please try again.', 'error');
     } finally {
       setIsUploading(false);
     }
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete "${name}"?`)) {
-      return;
-    }
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/admin/documents/${id}`, {
+      const response = await fetch(`/api/admin/documents/${deleteTarget.id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Document deleted successfully!' });
+        showToast('Document deleted successfully!', 'success');
+        setDeleteTarget(null);
         fetchDocuments();
       } else {
         const error = await response.json();
-        setMessage({ type: 'error', text: error.error || 'Failed to delete document' });
+        showToast(error.error || 'Failed to delete document', 'error');
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+      showToast('An error occurred. Please try again.', 'error');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -175,23 +193,23 @@ export default function AdminDocumentsPage() {
 
   return (
     <div>
+      <ToastContainer />
+
+      <ConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Document"
+        message={`Are you sure you want to delete "${deleteTarget?.name}"? This will permanently remove the file from storage. This action cannot be undone.`}
+        confirmLabel="Delete"
+        variant="danger"
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+        isLoading={isDeleting}
+      />
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-2">Document Management</h1>
         <p className="text-gray-600">Upload and manage documents for the timeline</p>
       </div>
-
-      {/* Status Message */}
-      {message.text && (
-        <div
-          className={`p-4 rounded-lg mb-6 ${
-            message.type === 'success'
-              ? 'bg-green-50 border border-green-200 text-green-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
-        >
-          {message.text}
-        </div>
-      )}
 
       {/* Upload Form */}
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 mb-6">
@@ -238,13 +256,13 @@ export default function AdminDocumentsPage() {
 
           <div>
             <label htmlFor="file" className="block text-sm font-medium text-gray-700 mb-2">
-              File (PDF, DOC, DOCX only — Max 10MB)
+              File (PDF, DOC, DOCX, XLS, XLSX — Max 10MB)
             </label>
             <input
               id="file"
               type="file"
               required
-              accept=".pdf,.doc,.docx"
+              accept=".pdf,.doc,.docx,.xls,.xlsx"
               onChange={handleFileChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
@@ -255,8 +273,17 @@ export default function AdminDocumentsPage() {
             disabled={isUploading}
             className="flex items-center gap-2 bg-primary hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-colors"
           >
-            <Upload className="w-5 h-5" />
-            {isUploading ? 'Uploading...' : 'Upload Document'}
+            {isUploading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Upload className="w-5 h-5" />
+                Upload Document
+              </>
+            )}
           </button>
         </form>
       </div>
@@ -317,7 +344,7 @@ export default function AdminDocumentsPage() {
                           <Download className="w-4 h-4" />
                         </a>
                         <button
-                          onClick={() => handleDelete(doc.id, doc.name)}
+                          onClick={() => setDeleteTarget({ id: doc.id, name: doc.name })}
                           className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
                           aria-label="Delete"
                         >

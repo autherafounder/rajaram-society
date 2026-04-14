@@ -10,7 +10,8 @@ import {
   LogOut,
   Home,
   FileBarChart,
-  Users
+  Users,
+  MessageSquare
 } from 'lucide-react';
 
 export default function AdminSidebar() {
@@ -37,6 +38,7 @@ export default function AdminSidebar() {
     { href: '/admin/profile', label: 'Profile', icon: User },
     { href: '/admin/settings', label: 'Settings', icon: Settings },
     { href: '/admin/documents', label: 'Documents', icon: FileText },
+    { href: '/admin/feedback', label: 'Feedback', icon: MessageSquare },
     { href: '/admin/audit-log', label: 'Audit Log', icon: FileBarChart },
     { href: '/admin/users', label: 'Users', icon: Users },
   ];

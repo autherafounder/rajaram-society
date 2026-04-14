@@ -58,7 +58,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://*.googleapis.com https://fonts.googleapis.com", // Google Maps and Fonts styles
               "img-src 'self' data: https: blob: https://*.googleapis.com https://*.google.com https://*.gstatic.com", // Google Maps images
               "font-src 'self' data: https://fonts.gstatic.com", // Google Fonts
-              "connect-src 'self' https: https://*.googleapis.com https://*.google.com", // Google Maps API calls
+              "connect-src 'self' https: https://*.googleapis.com https://*.google.com https://*.supabase.co", // Google Maps + Supabase API calls
               "frame-src 'self' https://*.google.com https://*.googleapis.com", // Google Maps iframes
               "child-src 'self' https://*.google.com https://*.googleapis.com", // Google Maps iframes (older browsers)
               "frame-ancestors 'self'",

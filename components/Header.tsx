@@ -130,8 +130,8 @@ export default function Header() {
           </button>
         ) : (
           <Link
-            href="/login"
-            aria-label="Login to your account"
+            href="/admin/login"
+            aria-label="Login to admin panel"
             className="flex items-center gap-2 bg-white text-gray-800 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm"
           >
             <span className="hidden sm:inline font-medium">Login</span>

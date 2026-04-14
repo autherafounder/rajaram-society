@@ -10,7 +10,7 @@ export async function DELETE(
     const admin = requireAdmin(request);
     const documentId = params.id;
 
-    // Find the document
+    // Find the document first
     const { data: document, error: findError } = await supabaseAdmin
       .from('documents')
       .select('*')
@@ -21,7 +21,8 @@ export async function DELETE(
       return NextResponse.json({ error: 'Document not found' }, { status: 404 });
     }
 
-    // Delete file from Supabase Storage
+    // Step 1: Delete file from Supabase Storage FIRST
+    // (If this fails, we still have the DB record pointing to it)
     if (document.file_path) {
       const { error: storageError } = await supabaseAdmin.storage
         .from('documents')
@@ -29,29 +30,35 @@ export async function DELETE(
 
       if (storageError) {
         console.error('Error deleting file from storage:', storageError);
-        // Continue even if storage deletion fails
+        // Log the orphan risk but continue with DB deletion
+        // The file might already be deleted or the path might be wrong
       }
     }
 
-    // Delete from database
+    // Step 2: Delete from database
     const { error: deleteError } = await supabaseAdmin
       .from('documents')
       .delete()
       .eq('id', documentId);
 
     if (deleteError) {
-      console.error('Error deleting document:', deleteError);
+      console.error('Error deleting document record:', deleteError);
       return NextResponse.json(
         { error: 'Failed to delete document' },
         { status: 500 }
       );
     }
 
-    // Log admin activity
+    // Step 3: Log admin activity
     await supabaseAdmin.from('admin_activity').insert({
       admin_email: admin.email,
       action: 'document_delete',
-      details: { documentId, name: document.name },
+      details: {
+        documentId,
+        name: document.name,
+        filePath: document.file_path,
+        timelineId: document.timeline_id,
+      },
     });
 
     return NextResponse.json(

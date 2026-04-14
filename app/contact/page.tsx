@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { MapPin, User, Mail, Phone, Clock, MessageSquare } from 'lucide-react';
-import { sanitizeInput, validateEmail, validatePhone } from '@/utils/validation';
+import Toast, { useToast } from '@/components/Toast';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -14,35 +14,44 @@ export default function ContactPage() {
     inquiry: '',
     messageType: 'suggestion',
     message: '',
+    website: '', // Honeypot field
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { showToast, ToastContainer } = useToast();
+
+  // Client-side validation
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim() || formData.name.trim().length < 2) {
+      newErrors.name = 'Name must be at least 2 characters';
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+    if (formData.phone) {
+      const digitsOnly = formData.phone.replace(/\D/g, '');
+      if (digitsOnly.length < 10 || !/^[\d\s\-\+\(\)]+$/.test(formData.phone)) {
+        newErrors.phone = 'Please enter a valid phone number';
+      }
+    }
+    if (!formData.message.trim() || formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (isSubmitting) return;
-
-    // Validate form
-    const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-    if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    if (formData.phone && !validatePhone(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
-    }
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
 
@@ -53,8 +62,18 @@ export default function ContactPage() {
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Submission failed');
+        if (response.status === 429) {
+          showToast('Too many submissions. Please try again later.', 'error');
+        } else if (data.details) {
+          setErrors(data.details);
+          showToast('Please fix the errors in the form.', 'error');
+        } else {
+          showToast(data.error || 'Submission failed. Please try again.', 'error');
+        }
+        return;
       }
 
       // Reset form
@@ -65,13 +84,18 @@ export default function ContactPage() {
         inquiry: '',
         messageType: 'suggestion',
         message: '',
+        website: '',
       });
       setErrors({});
 
-      // Show success message
-      alert('Thank you! Your message has been submitted successfully.');
+      showToast(
+        data.ticketId
+          ? `Thank you! Your ticket ID is ${data.ticketId}`
+          : 'Thank you! Your message has been submitted successfully.',
+        'success'
+      );
     } catch (error) {
-      setErrors({ submit: 'An error occurred. Please try again later.' });
+      showToast('An error occurred. Please try again later.', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -81,12 +105,7 @@ export default function ContactPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    const sanitized = name === 'message' || name === 'name' ? sanitizeInput(value) : value;
-
-    setFormData({
-      ...formData,
-      [name]: sanitized,
-    });
+    setFormData({ ...formData, [name]: value });
 
     // Clear error when user starts typing
     if (errors[name]) {
@@ -101,6 +120,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      <ToastContainer />
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
@@ -196,10 +216,24 @@ export default function ContactPage() {
               <h2 className="text-3xl font-bold text-gray-800 mb-6">Get in Touch</h2>
 
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Honeypot — hidden from real users, bots will fill it */}
+                <div className="absolute opacity-0 pointer-events-none h-0 overflow-hidden" aria-hidden="true" tabIndex={-1}>
+                  <label htmlFor="website">Website</label>
+                  <input
+                    type="text"
+                    id="website"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleChange}
+                    autoComplete="off"
+                    tabIndex={-1}
+                  />
+                </div>
+
                 {/* Name */}
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                    Name
+                    Name *
                   </label>
                   <input
                     type="text"
@@ -207,9 +241,12 @@ export default function ContactPage() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
+                      errors.name ? 'border-red-400' : 'border-gray-300'
+                    }`}
                     required
                   />
+                  {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name}</p>}
                 </div>
 
                 {/* Phone */}
@@ -225,16 +262,18 @@ export default function ContactPage() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                      required
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
+                        errors.phone ? 'border-red-400' : 'border-gray-300'
+                      }`}
                     />
                   </div>
+                  {errors.phone && <p className="text-sm text-red-600 mt-1">{errors.phone}</p>}
                 </div>
 
                 {/* Email */}
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
+                    Email Address *
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -244,10 +283,13 @@ export default function ContactPage() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
+                        errors.email ? 'border-red-400' : 'border-gray-300'
+                      }`}
                       required
                     />
                   </div>
+                  {errors.email && <p className="text-sm text-red-600 mt-1">{errors.email}</p>}
                 </div>
 
                 {/* Work Inquiry */}
@@ -261,7 +303,6 @@ export default function ContactPage() {
                     value={formData.inquiry}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    required
                   >
                     <option value="">Select an option</option>
                     <option value="status-update">Status Update</option>
@@ -278,25 +319,25 @@ export default function ContactPage() {
                     Message Type
                   </label>
                   <div className="flex gap-4">
-                    <label className="flex items-center">
+                    <label className="flex items-center cursor-pointer">
                       <input
                         type="radio"
                         name="messageType"
                         value="suggestion"
                         checked={formData.messageType === 'suggestion'}
                         onChange={handleChange}
-                        className="mr-2"
+                        className="mr-2 accent-primary"
                       />
                       <span>Suggestion</span>
                     </label>
-                    <label className="flex items-center">
+                    <label className="flex items-center cursor-pointer">
                       <input
                         type="radio"
                         name="messageType"
                         value="inquiry"
                         checked={formData.messageType === 'inquiry'}
                         onChange={handleChange}
-                        className="mr-2"
+                        className="mr-2 accent-primary"
                       />
                       <span>Inquiry</span>
                     </label>
@@ -306,7 +347,7 @@ export default function ContactPage() {
                 {/* Message */}
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    Query or Grievance details
+                    Query or Grievance details *
                   </label>
                   <textarea
                     id="message"
@@ -314,10 +355,16 @@ export default function ContactPage() {
                     value={formData.message}
                     onChange={handleChange}
                     rows={5}
-                    placeholder="Please provide details about your query or grievance..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="Please provide details about your query or grievance (at least 10 characters)..."
+                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent ${
+                      errors.message ? 'border-red-400' : 'border-gray-300'
+                    }`}
                     required
                   />
+                  {errors.message && <p className="text-sm text-red-600 mt-1">{errors.message}</p>}
+                  <p className="text-xs text-gray-400 mt-1">
+                    {formData.message.length}/2000 characters
+                  </p>
                 </div>
 
                 {/* Error Message */}
@@ -327,27 +374,20 @@ export default function ContactPage() {
                   </div>
                 )}
 
-                {/* Field Error Messages */}
-                {errors.name && (
-                  <p className="text-sm text-red-600">{errors.name}</p>
-                )}
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email}</p>
-                )}
-                {errors.phone && (
-                  <p className="text-sm text-red-600">{errors.phone}</p>
-                )}
-                {errors.message && (
-                  <p className="text-sm text-red-600">{errors.message}</p>
-                )}
-
                 {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors"
+                  className="w-full bg-primary hover:bg-primary-dark disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Submit'}
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit'
+                  )}
                 </button>
               </form>
             </div>
@@ -358,4 +398,3 @@ export default function ContactPage() {
     </div>
   );
 }
-

@@ -42,6 +42,41 @@ export type Database = {
                     updated_at?: string;
                 };
             };
+            feedbacks: {
+                Row: {
+                    id: string;
+                    name: string;
+                    phone: string | null;
+                    email: string;
+                    inquiry_type: string | null;
+                    message_type: 'suggestion' | 'inquiry';
+                    message: string;
+                    created_at: string;
+                    status: 'new' | 'read' | 'resolved';
+                };
+                Insert: {
+                    id?: string;
+                    name: string;
+                    phone?: string | null;
+                    email: string;
+                    inquiry_type?: string | null;
+                    message_type: 'suggestion' | 'inquiry';
+                    message: string;
+                    created_at?: string;
+                    status?: 'new' | 'read' | 'resolved';
+                };
+                Update: {
+                    id?: string;
+                    name?: string;
+                    phone?: string | null;
+                    email?: string;
+                    inquiry_type?: string | null;
+                    message_type?: 'suggestion' | 'inquiry';
+                    message?: string;
+                    created_at?: string;
+                    status?: 'new' | 'read' | 'resolved';
+                };
+            };
             documents: {
                 Row: {
                     id: string;

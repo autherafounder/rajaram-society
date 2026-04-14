@@ -17,16 +17,33 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ documents: [] }, { status: 200 });
     }
 
-    // Map DB fields to camelCase for frontend
-    const mappedDocs = (documents || []).map((doc: any) => ({
-      id: doc.id,
-      name: doc.name,
-      timelineId: doc.timeline_id,
-      timelineTitle: doc.timeline_title,
-      url: doc.url,
-      uploadDate: doc.upload_date,
-      size: doc.size,
-    }));
+    // Generate signed URLs for each document
+    const mappedDocs = await Promise.all(
+      (documents || []).map(async (doc: any) => {
+        let signedUrl = doc.url || '';
+
+        // Generate signed URL from file_path if available
+        if (doc.file_path) {
+          const { data: signedUrlData } = await supabaseAdmin.storage
+            .from('documents')
+            .createSignedUrl(doc.file_path, 3600); // 1 hour expiry
+
+          if (signedUrlData?.signedUrl) {
+            signedUrl = signedUrlData.signedUrl;
+          }
+        }
+
+        return {
+          id: doc.id,
+          name: doc.name,
+          timelineId: doc.timeline_id,
+          timelineTitle: doc.timeline_title,
+          url: signedUrl,
+          uploadDate: doc.upload_date,
+          size: doc.size,
+        };
+      })
+    );
 
     return NextResponse.json({ documents: mappedDocs }, { status: 200 });
   } catch (error) {
