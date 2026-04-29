@@ -25,7 +25,30 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Check auth state on mount and listen for changes
+  useEffect(() => {
+    if (!supabase) return;
+
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsLoggedIn(!!session);
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: string, session: unknown) => {
+      setIsLoggedIn(!!session);
+    });
+
+    return () => subscription?.unsubscribe();
+  }, [supabase]);
+
   const handleLogout = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     setIsLoggedIn(false);
   };

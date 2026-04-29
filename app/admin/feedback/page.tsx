@@ -86,7 +86,7 @@ export default function AdminFeedbackPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [page, filterStatus]);
+  }, [page, filterStatus, showToast]);
 
   useEffect(() => {
     fetchFeedbacks();

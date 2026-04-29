@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FileBarChart, Download, Calendar, User, Search, FileDown, Filter } from 'lucide-react';
 
 interface AuditLogEntry {
@@ -35,11 +35,7 @@ export default function AuditLogPage() {
     endDate: '',
   });
 
-  useEffect(() => {
-    fetchAuditLogs();
-  }, [filters]);
-
-  const fetchAuditLogs = async () => {
+  const fetchAuditLogs = useCallback(async () => {
     setIsLoading(true);
     try {
       const params = new URLSearchParams();
@@ -65,7 +61,11 @@ export default function AuditLogPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    fetchAuditLogs();
+  }, [fetchAuditLogs]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

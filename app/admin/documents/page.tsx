@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Upload, FileText, Trash2, Download, Calendar } from 'lucide-react';
 import { timelineItems } from '@/data/timeline-items';
 import Toast, { useToast } from '@/components/Toast';
@@ -30,34 +30,7 @@ export default function AdminDocumentsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const { showToast, ToastContainer } = useToast();
 
-  useEffect(() => {
-    fetchDocuments();
-  }, []);
-
-  const fetchDocuments = async () => {
-    try {
-      const response = await fetch('/api/admin/documents', {
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setDocuments(data.documents || []);
-        // Fetch download counts after documents load
-        fetchDownloadCounts(data.documents || []);
-      } else if (response.status === 401) {
-        localStorage.removeItem('adminToken');
-        window.location.href = '/admin/login';
-      }
-    } catch (error) {
-      console.error('Error fetching documents:', error);
-      showToast('Failed to load documents', 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchDownloadCounts = async (docs: Document[]) => {
+  const fetchDownloadCounts = useCallback(async (docs: Document[]) => {
     try {
       const response = await fetch('/api/admin/audit-log', {
         credentials: 'include',
@@ -72,8 +45,8 @@ export default function AdminDocumentsPage() {
           downloadCounts.set(log.documentId, count + 1);
         });
 
-        setDocuments((prevDocs) =>
-          prevDocs.map((doc) => ({
+        setDocuments(prevDocs =>
+          prevDocs.map(doc => ({
             ...doc,
             downloadCount: downloadCounts.get(doc.id) || 0,
           }))
@@ -82,7 +55,33 @@ export default function AdminDocumentsPage() {
     } catch (error) {
       console.error('Error fetching download counts:', error);
     }
-  };
+  }, []);
+
+  const fetchDocuments = useCallback(async () => {
+    try {
+      const response = await fetch('/api/admin/documents', {
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setDocuments(data.documents || []);
+        fetchDownloadCounts(data.documents || []);
+      } else if (response.status === 401) {
+        localStorage.removeItem('adminToken');
+        window.location.href = '/admin/login';
+      }
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      showToast('Failed to load documents', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [fetchDownloadCounts, showToast]);
+
+  useEffect(() => {
+    fetchDocuments();
+  }, [fetchDocuments]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

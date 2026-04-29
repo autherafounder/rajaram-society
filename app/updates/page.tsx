@@ -66,14 +66,9 @@ const timelineItems: TimelineItem[] = [
     id: 6,
     step: 6,
     title: 'Feasibility Report',
-    description: 'Feasibility study prepared by PMC.',
-    completed: true,
-    downloadLinks: [
-      { name: '(Residential cum Commercial) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Residential_cum_Commercial_Feasibility_Report_for_Jai_Jawan_CHS.pdf' },
-      { name: '(Commercial cum Residential) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Commercial_cum_Residential_Feasibility_Report_for_Jai_Jawan_CHS.pdf' },
-      { name: '(Commercial) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Commercial_Feasibility_Report_for_Jai_Jawan_CHS_at_P_01,_S_17,_Vashi.pdf' },
-      { name: '(Self-Redevelopment) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Self_Redevelopment_Feasibility_Report_for_Jai_Jawan_CHS_at_P_01.pdf' },
-    ]
+    description: 'Feasibility study prepared by PMC. Documents will be available for download once uploaded.',
+    completed: false,
+    detailDescription: 'The feasibility reports are being finalized and will be made available for download shortly. Please check back later for the following reports: Residential cum Commercial, Commercial cum Residential, Commercial, and Self-Redevelopment feasibility reports for Jai Jawan CHS at P.01, S.17, Vashi.',
   },
   { id: 7, step: 7, title: 'Draft Tender Inviting Developer', description: 'Draft tender prepared to invite developers.', completed: false },
   { id: 8, step: 8, title: 'Final Tender for Inviting Developer', description: 'Final tender released inviting developers.', completed: false },
