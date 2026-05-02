@@ -1,3 +1,6 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { requireAdmin } from '@/lib/auth';
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
 // Disable Next.js route caching for dynamic data
 export const dynamic = 'force-dynamic';
@@ -36,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error('Error fetching feedbacks:', error);
-      return NextResponse.json({ feedbacks: [], total: 0 }, { status: 200 });
+      return NextResponse.json({ feedbacks: [], total: 0, stats: { total: 0, new: 0, read: 0, resolved: 0 } }, { status: 200 });
     }
 
     // Get stats

@@ -1,3 +1,5 @@
+import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
 // Disable Next.js route caching for dynamic data
 export const dynamic = 'force-dynamic';

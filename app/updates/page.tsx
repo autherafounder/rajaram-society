@@ -1,16 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CheckCircle2, Download, FileText, ChevronDown, ChevronUp, Calendar } from 'lucide-react';
+import { CheckCircle2, Download, FileText, ChevronDown, ChevronUp, Calendar, Loader2 } from 'lucide-react';
 
 interface TimelineItem {
   id: number;
   step: number;
   title: string;
   description: string;
-  completed: boolean;
   detailDescription?: string;
   downloadLinks?: Array<{
     name: string;
@@ -18,56 +17,45 @@ interface TimelineItem {
   }>;
 }
 
+// Timeline items — status is NOT stored here. It's derived from the database.
 const timelineItems: TimelineItem[] = [
   {
-    id: 1,
-    step: 1,
+    id: 1, step: 1,
     title: 'Resolution of redevelopment',
     description: 'Society resolution passed for redevelopment.',
-    completed: true,
     downloadLinks: [{ name: 'Minutes of Meeting', url: '/docs/1. Minutes of Meeting for Resolution of Redevelopment.pdf' }]
   },
   {
-    id: 2,
-    step: 2,
+    id: 2, step: 2,
     title: 'PMC Invitation',
     description: 'Invitation issued to Project Management Consultants (PMC).',
-    completed: true,
     downloadLinks: [{ name: 'PMC Invitation', url: '/docs/2. PMC Invitation.pdf' }]
   },
   {
-    id: 3,
-    step: 3,
+    id: 3, step: 3,
     title: 'PMC Tender Opening',
     description: 'PMC tenders opened and recorded.',
-    completed: true,
     downloadLinks: [{ name: 'PMC Tender Opening', url: '/docs/3. PMC Tender Opening.pdf' }]
   },
   {
-    id: 4,
-    step: 4,
+    id: 4, step: 4,
     title: 'PMC Appointment',
     description: 'PMC appointed to manage the project.',
-    completed: true,
     downloadLinks: [
       { name: 'PMC Appointment', url: '/docs/4. PMC Appointment.pdf' },
       { name: 'Service Agreement', url: '/docs/Service Agreement.pdf' }
     ]
   },
   {
-    id: 5,
-    step: 5,
+    id: 5, step: 5,
     title: 'Area Certification',
     description: 'Certified area details obtained for planning.',
-    completed: true,
     downloadLinks: [{ name: 'Area Certificate', url: '/docs/5. Area Certificate.pdf' }]
   },
   {
-    id: 6,
-    step: 6,
+    id: 6, step: 6,
     title: 'Feasibility Report',
     description: 'Feasibility study prepared by PMC. Documents are available for download.',
-    completed: true,
     detailDescription: 'The following feasibility reports have been prepared for Jai Jawan CHS at P.01, S.17, Vashi: Residential cum Commercial, Commercial cum Residential, Commercial, and Self-Redevelopment feasibility reports.',
     downloadLinks: [
       { name: '(Residential cum Commercial) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Residential_cum_Commercial_Feasibility_Report_for_Jai_Jawan_CHS.pdf' },
@@ -76,19 +64,19 @@ const timelineItems: TimelineItem[] = [
       { name: '(Self-Redevelopment) Feasibility Report for Jai Jawan CHS at P.01, S.17, Vashi', url: '/docs/Self_Redevelopment_Feasibility_Report_for_Jai_Jawan_CHS_at_P_01.pdf' },
     ],
   },
-  { id: 7, step: 7, title: 'Draft Tender Inviting Developer', description: 'Draft tender prepared to invite developers.', completed: false },
-  { id: 8, step: 8, title: 'Final Tender for Inviting Developer', description: 'Final tender released inviting developers.', completed: false },
-  { id: 9, step: 9, title: 'Developer Tender Opening', description: 'Developer tenders opened for evaluation.', completed: false },
-  { id: 10, step: 10, title: 'Developer Appointment/ 79A Order', description: 'Developer appointed as per 79A guidelines.', completed: false },
-  { id: 11, step: 11, title: 'Development Agreement', description: 'Development Agreement executed with the developer.', completed: false },
-  { id: 12, step: 12, title: 'CC Documentation', description: 'Commencement Certificate (CC) documentation submitted.', completed: false },
-  { id: 13, step: 13, title: 'Approved CC', description: 'Commencement Certificate approved.', completed: false },
-  { id: 14, step: 14, title: 'RERA Registration Certificate', description: 'RERA registration completed and certificate issued.', completed: false },
-  { id: 15, step: 15, title: 'Construction', description: 'Construction activities in progress.', completed: false },
-  { id: 16, step: 16, title: 'OC Documentation', description: 'Occupancy Certificate documentation prepared.', completed: false },
-  { id: 17, step: 17, title: 'Occupancy Certificate (OC)', description: 'OC received from competent authority.', completed: false },
-  { id: 18, step: 18, title: 'Possession/ Handover', description: 'Possession and handover to members.', completed: false },
-  { id: 19, step: 19, title: 'Taxation', description: 'Applicable taxation formalities completed.', completed: false },
+  { id: 7, step: 7, title: 'Draft Tender Inviting Developer', description: 'Draft tender prepared to invite developers.' },
+  { id: 8, step: 8, title: 'Final Tender for Inviting Developer', description: 'Final tender released inviting developers.' },
+  { id: 9, step: 9, title: 'Developer Tender Opening', description: 'Developer tenders opened for evaluation.' },
+  { id: 10, step: 10, title: 'Developer Appointment/ 79A Order', description: 'Developer appointed as per 79A guidelines.' },
+  { id: 11, step: 11, title: 'Development Agreement', description: 'Development Agreement executed with the developer.' },
+  { id: 12, step: 12, title: 'CC Documentation', description: 'Commencement Certificate (CC) documentation submitted.' },
+  { id: 13, step: 13, title: 'Approved CC', description: 'Commencement Certificate approved.' },
+  { id: 14, step: 14, title: 'RERA Registration Certificate', description: 'RERA registration completed and certificate issued.' },
+  { id: 15, step: 15, title: 'Construction', description: 'Construction activities in progress.' },
+  { id: 16, step: 16, title: 'OC Documentation', description: 'Occupancy Certificate documentation prepared.' },
+  { id: 17, step: 17, title: 'Occupancy Certificate (OC)', description: 'OC received from competent authority.' },
+  { id: 18, step: 18, title: 'Possession/ Handover', description: 'Possession and handover to members.' },
+  { id: 19, step: 19, title: 'Taxation', description: 'Applicable taxation formalities completed.' },
 ];
 
 interface UploadedDocument {
@@ -105,6 +93,34 @@ export default function UpdatesPage() {
   const [expandedItems, setExpandedItems] = useState<Set<number>>(new Set());
   const [uploadedDocuments, setUploadedDocuments] = useState<Record<number, UploadedDocument[]>>({});
   const [loadingDocuments, setLoadingDocuments] = useState<Record<number, boolean>>({});
+  // Dynamic status: counts of documents per timeline step (fetched from DB)
+  const [docCounts, setDocCounts] = useState<Record<number, number>>({});
+  const [statusLoading, setStatusLoading] = useState(true);
+
+  // Fetch document counts on mount to determine completed/pending status
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const response = await fetch('/api/documents/timeline/status');
+        if (response.ok) {
+          const data = await response.json();
+          setDocCounts(data.counts || {});
+        }
+      } catch (error) {
+        console.error('Error fetching timeline status:', error);
+      } finally {
+        setStatusLoading(false);
+      }
+    };
+    fetchStatus();
+  }, []);
+
+  // A step is "completed" if it has static downloadLinks OR at least one uploaded document in DB
+  const isStepCompleted = (item: TimelineItem): boolean => {
+    const hasStaticDocs = item.downloadLinks && item.downloadLinks.length > 0;
+    const hasUploadedDocs = (docCounts[item.id] || 0) > 0;
+    return hasStaticDocs || hasUploadedDocs;
+  };
 
   const toggleItem = (id: number) => {
     setExpandedItems((prev) => {
@@ -128,9 +144,15 @@ export default function UpdatesPage() {
       const response = await fetch(`/api/documents/timeline/${timelineId}`);
       if (response.ok) {
         const data = await response.json();
+        const docs = data.documents || [];
         setUploadedDocuments((prev) => ({
           ...prev,
-          [timelineId]: data.documents || [],
+          [timelineId]: docs,
+        }));
+        // Update doc count to keep status in sync
+        setDocCounts((prev) => ({
+          ...prev,
+          [timelineId]: docs.length,
         }));
       }
     } catch (error) {
@@ -190,17 +212,20 @@ export default function UpdatesPage() {
               <div>
                 {timelineItems.map((item, index) => {
                   const isExpanded = expandedItems.has(item.id);
+                  const completed = isStepCompleted(item);
                   return (
                     <div key={item.id} className="relative flex gap-6">
                       {/* Step Number & Status Node */}
                       <div className="flex flex-col items-center">
                         <div
-                          className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold ${item.completed
-                            ? 'bg-green-500 text-white'
+                          className={`w-16 h-16 rounded-full flex items-center justify-center text-lg font-bold transition-all duration-500 ${completed
+                            ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
                             : 'bg-gray-200 text-gray-500'
                             } z-10`}
                         >
-                          {item.completed ? (
+                          {statusLoading ? (
+                            <Loader2 className="w-6 h-6 animate-spin" />
+                          ) : completed ? (
                             <CheckCircle2 className="w-8 h-8" />
                           ) : (
                             item.step
@@ -208,7 +233,7 @@ export default function UpdatesPage() {
                         </div>
                         {index < timelineItems.length - 1 && (
                           <div
-                            className={`w-0.5 flex-1 ${item.completed ? 'bg-green-500' : 'bg-gray-300'
+                            className={`w-0.5 flex-1 transition-colors duration-500 ${completed ? 'bg-green-500' : 'bg-gray-300'
                               }`}
                             style={{ minHeight: '40px' }}
                           ></div>
@@ -345,4 +370,3 @@ export default function UpdatesPage() {
     </div>
   );
 }
-

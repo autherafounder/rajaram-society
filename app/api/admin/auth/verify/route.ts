@@ -1,3 +1,5 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getAdminUser } from '@/lib/auth';
 
 // Disable Next.js route caching for dynamic data
 export const dynamic = 'force-dynamic';
