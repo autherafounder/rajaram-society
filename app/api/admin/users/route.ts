@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/auth';
 import { supabaseAdmin } from '@/lib/supabase/admin';
+import { getAuditLogs, getBlockedUsers, blockUser } from '@/lib/download-tracking';
 
 // Disable Next.js route caching for dynamic data
 export const dynamic = 'force-dynamic';
