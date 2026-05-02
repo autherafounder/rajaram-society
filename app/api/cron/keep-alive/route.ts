@@ -1,5 +1,6 @@
-import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase/admin';
+
+// Disable Next.js route caching for dynamic data
+export const dynamic = 'force-dynamic';
 
 // Keep-alive endpoint to prevent Supabase free-tier auto-pausing
 // Supabase pauses projects after 7 days of inactivity

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { requireAdmin } from '@/lib/auth';
-import { supabaseAdmin } from '@/lib/supabase/admin';
+
+// Disable Next.js route caching for dynamic data
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {

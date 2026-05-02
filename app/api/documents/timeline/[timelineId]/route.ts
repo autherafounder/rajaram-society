@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 
+// Disable Next.js route caching — documents change dynamically via admin uploads/deletes
+export const dynamic = 'force-dynamic';
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { timelineId: string } }
@@ -40,7 +43,12 @@ export async function GET(
 
     return NextResponse.json(
       { documents: mappedDocs },
-      { status: 200 }
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      }
     );
   } catch (error) {
     console.error('Timeline documents GET error:', error);
@@ -50,3 +58,4 @@ export async function GET(
     );
   }
 }
+
