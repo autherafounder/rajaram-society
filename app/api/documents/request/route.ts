@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,29 +21,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Implement actual document access request logic
-    // - Verify flat/unit ownership
-    // - Check eligibility
-    // - Save request to database
-    // - Send email to admin for review
-    // - Send confirmation email to user
-    // - Generate request ID for tracking
-    
-    // For now, return success response
+    // Save document access request to Supabase
+    const { data: requestData, error: insertError } = await supabaseAdmin
+      .from('document_requests')
+      .insert({
+        full_name: fullName.trim(),
+        flat_unit: flatUnit.trim(),
+        email: email.trim().toLowerCase(),
+        documents: documents,
+        status: 'pending',
+      })
+      .select('id')
+      .single();
+
+    if (insertError) {
+      console.error('Error saving document request:', insertError);
+      return NextResponse.json(
+        { error: 'Failed to submit request. Please try again.' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
       {
         message: 'Document access request submitted successfully',
-        requestId: `DOC-${Date.now()}`,
+        requestId: requestData.id,
         status: 'pending',
         estimatedTime: '72 business hours',
       },
       { status: 200 }
     );
   } catch (error) {
+    console.error('Document request error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
     );
   }
 }
-

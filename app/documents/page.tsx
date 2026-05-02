@@ -130,7 +130,7 @@ export default function DocumentsPage() {
                 Secure Document Access Request
               </h1>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                To access confidential society related document documents, please fill below. 
+                To access confidential society-related documents, please fill below. 
                 For security purposes, each application will be manually reviewed and access will 
                 be securely registered to your address within 72 business working hours.
               </p>

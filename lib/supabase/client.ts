@@ -80,32 +80,38 @@ export type Database = {
             documents: {
                 Row: {
                     id: string;
-                    user_id: string;
-                    title: string;
-                    file_path: string;
-                    file_type: string;
-                    file_size: number;
-                    is_public: boolean;
+                    name: string;
+                    timeline_id: number;
+                    timeline_title: string;
+                    url: string;
+                    file_path: string | null;
+                    upload_date: string;
+                    size: number;
+                    uploaded_by: string | null;
                     created_at: string;
                 };
                 Insert: {
                     id?: string;
-                    user_id: string;
-                    title: string;
-                    file_path: string;
-                    file_type: string;
-                    file_size: number;
-                    is_public?: boolean;
+                    name: string;
+                    timeline_id: number;
+                    timeline_title: string;
+                    url?: string;
+                    file_path?: string | null;
+                    upload_date?: string;
+                    size?: number;
+                    uploaded_by?: string | null;
                     created_at?: string;
                 };
                 Update: {
                     id?: string;
-                    user_id?: string;
-                    title?: string;
-                    file_path?: string;
-                    file_type?: string;
-                    file_size?: number;
-                    is_public?: boolean;
+                    name?: string;
+                    timeline_id?: number;
+                    timeline_title?: string;
+                    url?: string;
+                    file_path?: string | null;
+                    upload_date?: string;
+                    size?: number;
+                    uploaded_by?: string | null;
                     created_at?: string;
                 };
             };

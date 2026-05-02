@@ -39,7 +39,7 @@ export function getAdminUser(request: NextRequest): AdminUser | null {
     try {
       const decoded = jwt.verify(adminToken, JWT_SECRET, {
         algorithms: ['HS256'],
-        maxAge: '24h', // Reject tokens older than 24 hours
+        maxAge: '7d', // Must match expiresIn in login route
       }) as jwt.JwtPayload & AdminUser;
 
       // Validate required fields exist
