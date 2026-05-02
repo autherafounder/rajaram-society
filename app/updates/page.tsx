@@ -101,7 +101,7 @@ export default function UpdatesPage() {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const response = await fetch('/api/documents/timeline/status');
+        const response = await fetch('/api/documents/status');
         if (response.ok) {
           const data = await response.json();
           setDocCounts(data.counts || {});
